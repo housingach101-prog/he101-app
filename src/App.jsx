@@ -953,20 +953,14 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
   const [scenAns,setScenAns]=useState(null);
   const [scenSubmit,setScenSubmit]=useState(false);
   const [quizAnswers,setQuizAnswers]=useState({});
-  const [quizSubmitted,setQuizSubmitted]=useState(userMod?.status==="complete"&&userMod?.score!=null);
-  const [quizScore,setQuizScore]=useState(userMod?.score??null);
-  const [scenCompleted,setScenCompleted]=useState(
-    userMod?.status==="complete" ? Object.fromEntries((mod.scenarios||[]).map((_,i)=>[i,true])) : {}
-  );
+  const [quizSubmitted,setQuizSubmitted]=useState(false);
+  const [quizScore,setQuizScore]=useState(null);
+  const [scenCompleted,setScenCompleted]=useState({});
   const [wbAnswers,setWbAnswers]=useState({});
   const [userState,setUserState]=useState("IA");
   const [videoWatched,setVideoWatched]=useState(false);
   const [videoStarted,setVideoStarted]=useState(false);
-  const [sectionsDone,setSectionsDone]=useState(
-    userMod?.status==="complete"
-      ? {video:false,learn:false,scenarios:false,quiz:false,workbook:false}
-      : {video:false,learn:false,scenarios:false,quiz:false,workbook:false}
-  );
+  const [sectionsDone,setSectionsDone]=useState({video:false,learn:false,scenarios:false,quiz:false,workbook:false});
   const [gateWarning,setGateWarning]=useState("");
   const tabs=["video","learn","scenarios","quiz","workbook","resources"];
 
