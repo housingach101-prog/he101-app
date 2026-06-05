@@ -1042,8 +1042,7 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
               />
             </div>
             <div style={{padding:"16px 20px"}}>
-              {!sectionsDone.video?(
-                <div>
+              <div>
                   <div style={{fontSize:12,color:"#666",marginBottom:12,lineHeight:1.6,background:"#FFF8E1",padding:"10px 14px",borderRadius:8,border:"1px solid #F9A825"}}>
                     ⚠️ Watch the complete video above then click the button below to confirm you have finished watching before moving on to the Learn section.
                   </div>
@@ -1052,11 +1051,6 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                     ✅ I Have Watched the Full Video — Continue to Learn
                   </button>
                 </div>
-              ):(
-                <div style={{background:"#EAF7EA",border:"1px solid #4CAF50",borderRadius:8,padding:"12px 16px",textAlign:"center"}}>
-                  <span style={{fontSize:13,color:"#2E7D32",fontWeight:700}}>✅ Video completed — you may continue to the next sections</span>
-                </div>
-              )}
             </div>
           </div>
         )}
