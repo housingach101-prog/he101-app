@@ -964,7 +964,7 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
   const [videoStarted,setVideoStarted]=useState(false);
   const [sectionsDone,setSectionsDone]=useState(
     userMod?.status==="complete"
-      ? {video:false,learn:true,scenarios:true,quiz:true,workbook:true}
+      ? {video:false,learn:false,scenarios:false,quiz:false,workbook:false}
       : {video:false,learn:false,scenarios:false,quiz:false,workbook:false}
   );
   const [gateWarning,setGateWarning]=useState("");
