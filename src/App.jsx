@@ -2024,10 +2024,10 @@ export default function HE101App() {
                     placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
                 </div>
               ))}
-              <button onClick={async()=>{
+              <button onClick={()=>{
                 if(!individualForm.name||!individualForm.email||!individualForm.phone){showToast("Please fill in all required fields.");return;}
                 try{
-                  await supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false});
+                  supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false});
                   showToast("✅ Request received! We will contact you within 1 business day.");
                   setIndividualForm({name:"",email:"",phone:"",city:"",state:"IA"});
                   setShowIndividualForm(false);
@@ -2061,10 +2061,10 @@ export default function HE101App() {
                     placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
                 </div>
               ))}
-              <button onClick={async()=>{
+              <button onClick={()=>{
                 if(!agencyForm.agencyName||!agencyForm.contactName||!agencyForm.email||!agencyForm.phone){showToast("Please fill in all required fields.");return;}
                 try{
-                  await supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false});
+                  supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false});
                   showToast("✅ Request received! We will contact you within 1 business day.");
                   setAgencyForm({agencyName:"",contactName:"",email:"",phone:"",city:"",participants:""});
                   setShowAgencyForm(false);
