@@ -920,7 +920,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {Math.round((Object.values(user.modules||{}).reduce((a,m)=>a+(m.score||0),0)/Math.max(1,Object.values(user.modules||{}).reduce((a,m)=>a+(m.total||10),0)))*100)}%</div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null);const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"N/A";})()}</div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -2147,14 +2147,23 @@ export default function HE101App() {
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input value={contactForm[f.field]} onChange={e=>setContactForm(p=>({...p,[f.field]:e.target.value}))}
-                  placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
+                <input 
+                  value={contactForm[f.field]} 
+                  onChange={e=>{e.stopPropagation();setContactForm(p=>({...p,[f.field]:e.target.value}))}}
+                  onKeyDown={e=>e.stopPropagation()}
+                  placeholder={f.ph} 
+                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
             <div style={{marginBottom:14}}>
               <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>Message *</div>
-              <textarea value={contactForm.message} onChange={e=>setContactForm(p=>({...p,message:e.target.value}))}
-                placeholder="How can we help you?" rows={4} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"none",boxSizing:"border-box"}}/>
+              <textarea 
+                value={contactForm.message} 
+                onChange={e=>{e.stopPropagation();setContactForm(p=>({...p,message:e.target.value}))}}
+                onKeyDown={e=>e.stopPropagation()}
+                placeholder="How can we help you?" 
+                rows={5} 
+                style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"vertical",boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
             </div>
             <button onClick={submitContact} style={{background:B.teal,color:"white",border:"none",borderRadius:6,padding:"11px 24px",fontSize:13,fontWeight:700,cursor:"pointer",width:"100%"}}>
               Send Message
@@ -2295,7 +2304,7 @@ export default function HE101App() {
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input value={intakeForm[f.field]} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
+                <input value={intakeForm[f.field]} onKeyDown={e=>e.stopPropagation()} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
                   placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
@@ -2314,7 +2323,7 @@ export default function HE101App() {
             </div>
             <div style={{marginBottom:16}}>
               <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>What is your main housing goal?</div>
-              <textarea value={intakeForm.housingGoal} onChange={e=>setIntakeForm(p=>({...p,housingGoal:e.target.value}))}
+              <textarea onKeyDown={e=>e.stopPropagation()} value={intakeForm.housingGoal} onChange={e=>setIntakeForm(p=>({...p,housingGoal:e.target.value}))}
                 placeholder="Briefly describe what you hope to achieve through this program..." rows={3}
                 style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"none",boxSizing:"border-box"}}/>
             </div>
