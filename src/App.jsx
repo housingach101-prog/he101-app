@@ -96,27 +96,33 @@ const B = {
 
 // ─── EMAIL NOTIFICATIONS ─────────────────────────────────────────────────────
 // Uses EmailJS free tier - sends email when participant completes module or program
-// ─── EMAIL SENDING VIA RESEND ────────────────────────────────────────────────
-// Sign up free at resend.com → get API key → replace below
-const RESEND_API_KEY = "re_TvuZgLBd_KuNrN4ZP3EpMqNMKbKMavLkf"; // <-- replace after signup
+// ─── EMAIL SENDING VIA EMAILJS ───────────────────────────────────────────────
+const EMAILJS_SERVICE_ID = "service_7pc3u09";
+const EMAILJS_TEMPLATE_ID = "template_0aamrwn";
+const EMAILJS_PUBLIC_KEY = "cfPfxz2I8GItw8_2a";
 const ADMIN_EMAIL = "admin@housingetiquette101.org";
 
-const sendEmail = async (to, subject, html) => {
-  if(!RESEND_API_KEY || RESEND_API_KEY.includes('REPLACE')) return; // skip if no key
+const sendEmail = async (to, subject, message, participantName, module, date) => {
   try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from: "Housing Etiquette 101 <onboarding@resend.dev>",
-        to: [to],
-        subject,
-        html
-      })
+    // Load EmailJS dynamically if not already loaded
+    if(!window.emailjs) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+        script.onload = () => { window.emailjs.init(EMAILJS_PUBLIC_KEY); resolve(); };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: to,
+      subject: subject,
+      participant_name: participantName || 'Participant',
+      module: module || 'N/A',
+      message: message || '',
+      date: date || new Date().toLocaleDateString(),
     });
+    console.log('Email sent to:', to);
   } catch(e) { console.log('Email send failed:', e.message); }
 };
 
@@ -190,7 +196,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
           <p style="color:#888;font-size:12px;margin-top:20px">This is an automated notification from Housing Etiquette 101.</p>
         </div>
       </div>`;
-    await sendEmail(ADMIN_EMAIL, adminSubject, adminHtml);
+    await sendEmail(ADMIN_EMAIL, adminSubject, msg, participant.name, module ? 'Module '+module : 'All Modules', new Date().toLocaleDateString());
 
     // 2. Email to participant if they have an email
     if(participant.email && participant.email.includes('@')){
@@ -215,7 +221,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
             <p style="color:#888;font-size:12px">Questions? Contact us at ${ADMIN_EMAIL} or call (515) 681-3143.</p>
           </div>
         </div>`;
-      await sendEmail(participant.email, partSubject, partHtml);
+      await sendEmail(participant.email, partSubject, isComplete ? 'Congratulations on completing all 8 modules! Log in to download your certificate.' : 'Great job completing Module '+module+'! Keep going.', participant.name, module ? 'Module '+module : 'All Modules Complete', new Date().toLocaleDateString());
     }
 
   } catch(err) {
