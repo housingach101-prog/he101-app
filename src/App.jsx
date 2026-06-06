@@ -613,9 +613,9 @@ const MODULES = [
         "Communicates early",
       ],
       reflection: [
-        "What does being a successful renter mean to you, and what does your housing journey look like when things are going well?",
-        "Which of the four S.H.I.T. traits feels most natural to you, and how can that strength support the others?",
-        "What is one routine you can build into your week to feel more confident and in control of your housing?",
+        "What does being a good renter mean to you?",
+        "Which S.H.I.T. trait is easiest for you to use? How can it help you with the others?",
+        "Name one thing you can do each week to feel more in charge of your housing.",
       ],
     },
     scenarios: [
@@ -640,9 +640,9 @@ const MODULES = [
       purpose: "This module helps you understand different housing types and expectations. Where you live affects rules, behavior, and housing stability.",
       keyPoints: ["Differences between apartment, single dwelling, and shared housing", "How community living changes responsibilities", "Why shared spaces and neighbors matter", "How behavior affects housing stability"],
       reflection: [
-        "What does being a good neighbor look like in your day-to-day life, and what is one behavior you are committed to practicing?",
-        "What do you find most challenging about shared living, and what mindset shift would help you handle it with more confidence?",
-        "How do the choices you make in your unit and shared spaces affect the people around you, and what does that mean for your community?",
+        "What does being a good neighbor look like to you?",
+        "What is the hardest part of living near other people? How can you handle it better?",
+        "How do your actions in your home affect the people who live around you?",
       ],
     },
     scenarios: [
@@ -667,9 +667,9 @@ const MODULES = [
       purpose: "This module explains how rent, subsidies, and income rules work together. Many people lose housing due to misunderstandings or failure to report income.",
       keyPoints: ["Difference between contract rent and subsidies", "Common rental assistance programs", "Your responsibility to pay rent on time", "Why income reporting is required and enforced"],
       reflection: [
-        "What does financial stability in your housing look like for you, and what is one step you can take this month to feel more in control?",
-        "What would it feel like to always know your reporting requirements in advance, and what can you do this week to stay on top of them?",
-        "How can open and proactive communication strengthen your relationship with your landlord or housing program?",
+        "What does it mean to be on top of your money when it comes to housing?",
+        "Name one thing you can do this week to keep track of your income reporting.",
+        "How does talking to your landlord early help you stay in good standing?",
       ],
     },
     scenarios: [
@@ -694,9 +694,9 @@ const MODULES = [
       purpose: "This module explains lease agreements and house rules. Understanding these rules helps prevent violations and eviction.",
       keyPoints: ["What a lease agreement is and what you're signing", "Why house rules are legally enforceable", "How compliance protects housing stability", "Common violations and how to avoid them"],
       reflection: [
-        "Which section of your lease do you want to understand better, and what will you do to make sure you know your rights and responsibilities?",
-        "How will you handle situations where someone wants to stay with you long-term in a way that protects your housing and follows your lease?",
-        "When a lease rule feels unfair, how can you address that concern through the right channels while still honoring your agreement?",
+        "What part of your lease do you want to understand better? What will you do about it?",
+        "How will you handle it if someone wants to stay with you for a long time?",
+        "If a lease rule feels unfair, how can you bring it up the right way?",
       ],
     },
     scenarios: [
@@ -721,9 +721,9 @@ const MODULES = [
       purpose: "This module explains your responsibility to care for your housing unit. Proper unit care protects housing, deposits, and rental history.",
       keyPoints: ["What unit care and housekeeping mean in practice", "The difference between normal wear and damage", "Why renters are responsible for guest-caused damage", "How proper care protects housing stability and your record"],
       reflection: [
-        "What does a home you feel proud of look like, and what is one routine you can build into your week to maintain it?",
-        "What kind of renter do you want to be known as, and how does caring for your unit connect to your bigger housing goals?",
-        "If you were moving into a new place tomorrow, what would you document from day one to protect yourself and start strong?",
+        "What does a home you are proud of look like? What is one thing you will do to keep it that way?",
+        "What kind of renter do you want to be known as?",
+        "If you moved into a new place tomorrow, what would you write down on day one to protect yourself?",
       ],
     },
     scenarios: [
@@ -748,9 +748,9 @@ const MODULES = [
       purpose: "This module explains how maintenance, inspections, and recertification work. Understanding these processes helps prevent violations and loss of housing.",
       keyPoints: ["How maintenance requests work and why to document them", "Why inspections are required and what your rights are", "What recertification means and what documents are needed", "How cooperation with all three processes protects housing stability"],
       reflection: [
-        "What is one thing you can do right now to make sure maintenance issues in your home get reported quickly and handled properly?",
-        "How can you organize your important housing documents so you never miss a critical deadline or recertification date?",
-        "How can you reframe an inspection as a positive opportunity to show your landlord you are taking care of your home?",
+        "What is one thing you will do to make sure you report problems in your home right away?",
+        "How will you keep your housing papers organized so you never miss a deadline?",
+        "How can you look at an inspection as a good thing instead of something to stress about?",
       ],
     },
     scenarios: [
@@ -775,9 +775,9 @@ const MODULES = [
       purpose: "This module explains how communication and conflict resolution affect housing stability. Poor communication often leads to notices, violations, and eviction.",
       keyPoints: ["Why communication matters in housing as a business relationship", "How to handle conflict appropriately and safely", "What housing notices mean and why deadlines are critical", "How early communication protects housing"],
       reflection: [
-        "What communication style do you want to bring to your relationship with your landlord and neighbors, and how can that style protect your housing?",
-        "Why is it important to respond to housing notices quickly, and what system can you put in place to make sure you never delay?",
-        "What is one specific communication habit you are committing to as a renter that will help you maintain a positive and stable tenancy?",
+        "How do you want to talk to your landlord and neighbors to protect your housing?",
+        "Why is it important to respond to a housing notice fast? What will help you stay on top of it?",
+        "Name one communication habit you will commit to as a renter starting today.",
       ],
     },
     scenarios: [
@@ -802,9 +802,9 @@ const MODULES = [
       purpose: "This module explains what eviction is and how it affects housing stability. Understanding the eviction process helps you take action early.",
       keyPoints: ["What eviction means legally and practically", "Common eviction notices and what each requires", "What happens in court and your rights", "How eviction affects your housing record", "Steps to protect housing stability"],
       reflection: [
-        "What does stable, long-term housing mean for you and the people who depend on you, and what are you willing to do to protect it?",
-        "What local resources — rental assistance, legal aid, or mediation — do you want to learn more about so you are prepared before you ever need them?",
-        "Who do you want to be as a renter when housing becomes challenging, and what steps can you take today to prepare for that moment?",
+        "What does having stable housing mean to you and the people who count on you?",
+        "What resources — like rental help or legal aid — do you want to know more about before you need them?",
+        "Who do you want to be as a renter when things get hard? What can you do today to get ready?",
       ],
     },
     scenarios: [
@@ -921,6 +921,9 @@ const Certificate = ({user,onClose})=>(
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
           <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555",marginTop:4}}>
+            Overall Score: <strong style={{color:B.teal}}>{(()=>{const mods=Object.values(user.modules||{});const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return possible>0?Math.round((earned/possible)*100)+'%':'N/A';})()}</strong>
+          </div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -1042,7 +1045,8 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
               />
             </div>
             <div style={{padding:"16px 20px"}}>
-              <div>
+              {!sectionsDone.video?(
+                <div>
                   <div style={{fontSize:12,color:"#666",marginBottom:12,lineHeight:1.6,background:"#FFF8E1",padding:"10px 14px",borderRadius:8,border:"1px solid #F9A825"}}>
                     ⚠️ Watch the complete video above then click the button below to confirm you have finished watching before moving on to the Learn section.
                   </div>
@@ -1051,6 +1055,11 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                     ✅ I Have Watched the Full Video — Continue to Learn
                   </button>
                 </div>
+              ):(
+                <div style={{background:"#EAF7EA",border:"1px solid #4CAF50",borderRadius:8,padding:"12px 16px",textAlign:"center"}}>
+                  <span style={{fontSize:13,color:"#2E7D32",fontWeight:700}}>✅ Video completed — you may continue to the next sections</span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -2140,14 +2149,14 @@ export default function HE101App() {
           <Modal title="Contact Housing Etiquette 101" onClose={()=>setShowContact(false)}>
             <div style={{fontSize:13,color:B.gray,marginBottom:16,lineHeight:1.6}}>Have a question? Need help with the platform? Interested in a partnership? We respond within 1 business day.</div>
             {[
-              {label:"Your Name *",field:"name",ph:"Full name"},
-              {label:"Email Address *",field:"email",ph:"your@email.com"},
-              {label:"Phone Number",field:"phone",ph:"Optional"},
-              {label:"Organization",field:"org",ph:"Agency or company name if applicable"},
+              {label:"Your Name *",field:"name",ph:"Full name",type:"text"},
+              {label:"Email Address *",field:"email",ph:"your@email.com",type:"email"},
+              {label:"Phone Number",field:"phone",ph:"e.g. 515-555-1234",type:"tel"},
+              {label:"Organization",field:"org",ph:"Agency or company name if applicable",type:"text"},
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input value={contactForm[f.field]} onChange={e=>setContactForm(p=>({...p,[f.field]:e.target.value}))}
+                <input type={f.type||"text"} value={contactForm[f.field]} onChange={e=>setContactForm(p=>({...p,[f.field]:e.target.value}))}
                   placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
@@ -2190,12 +2199,17 @@ export default function HE101App() {
             </div>
           </div>
 
-          {pct===100&&u.certIssued&&(
+          {pct===100&&(
             <Card style={{background:"linear-gradient(135deg,#FFF8E1,#FFFDE7)",border:`2px solid ${B.gold}`,textAlign:"center"}}>
+              <div style={{fontSize:56,marginBottom:8}}>🎉</div>
+              <div style={{fontWeight:900,color:B.navy,fontSize:20,marginBottom:4,fontFamily:"Playfair Display,Georgia,serif"}}>Congratulations! You Did It!</div>
+              <div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules of Housing Etiquette 101.</div>
               <div style={{fontSize:36,marginBottom:6}}>🏆</div>
               <div style={{fontWeight:700,color:B.navy,fontSize:17,marginBottom:4}}>You're Certified!</div>
               <div style={{color:B.gray,fontSize:12,marginBottom:12}}>Cert ID: {u.certId} · Issued: {u.certDate}</div>
-              <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy}}>🏆 View & Print Certificate</Btn>
+              <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy,marginBottom:8}}>🏆 View & Download Certificate</Btn>
+              <Btn onClick={logout} color={B.navy} full style={{marginTop:8}}>✅ Exit Program</Btn>
+              {/* hidden for spacing */}<span style={{display:'none'}}>Print Certificate</Btn>
             </Card>
           )}
 
@@ -2295,7 +2309,7 @@ export default function HE101App() {
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input value={intakeForm[f.field]} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
+                <input type={f.type||"text"} value={intakeForm[f.field]} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
                   placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
@@ -2583,7 +2597,7 @@ export default function HE101App() {
                           return<div key={i} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
                             <span style={{fontSize:12}}>{s==="complete"?"✅":s==="in_progress"?"🔄":"⭕"}</span>
                             <div style={{flex:1,fontSize:12,color:B.navy}}>M{mod.id}: {mod.title.split(" ").slice(0,4).join(" ")}…</div>
-                            {(s==="complete"||s==="in_progress")&&m?.score!=null&&<Pill label={`${m.score}/${m.total||5}`} color={s==="complete"?B.green:B.orange}/>}
+                            {m?.score!=null&&<Pill label={`${m.score}/${m.total||10} (${Math.round((m.score/(m.total||10))*100)}%)`} color={s==="complete"?B.green:s==="in_progress"?B.orange:B.gray}/>}
                           </div>;
                         })}
                       </Card>
