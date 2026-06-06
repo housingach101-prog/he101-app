@@ -2224,14 +2224,14 @@ export default function HE101App() {
                 <div style={{fontSize:24}}>📞</div>
                 <div>
                   <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>PHONE</div>
-                  <a href="tel:+15153334455" style={{fontSize:15,fontWeight:700,color:B.navy,textDecoration:"none"}}>(515) 333-4455</a>
+                  <a href="tel:+15156813143" style={{fontSize:15,fontWeight:700,color:B.navy,textDecoration:"none"}}>(515) 681-3143</a>
                 </div>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
                 <div style={{fontSize:24}}>✉️</div>
                 <div>
                   <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>EMAIL</div>
-                  <a href="mailto:info@housingetiquette101.org" style={{fontSize:15,fontWeight:700,color:B.teal,textDecoration:"none"}}>info@housingetiquette101.org</a>
+                  <a href="mailto:admin@housingetiquette101.org" style={{fontSize:15,fontWeight:700,color:B.teal,textDecoration:"none"}}>admin@housingetiquette101.org</a>
                 </div>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
