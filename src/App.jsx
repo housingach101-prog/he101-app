@@ -96,14 +96,38 @@ const B = {
 
 // ─── EMAIL NOTIFICATIONS ─────────────────────────────────────────────────────
 // Uses EmailJS free tier - sends email when participant completes module or program
+// ─── EMAIL SENDING VIA RESEND ────────────────────────────────────────────────
+// Sign up free at resend.com → get API key → replace below
+const RESEND_API_KEY = "re_TvuZgLBd_KuNrN4ZP3EpMqNMKbKMavLkf"; // <-- replace after signup
+const ADMIN_EMAIL = "admin@housingetiquette101.org";
+
+const sendEmail = async (to, subject, html) => {
+  if(!RESEND_API_KEY || RESEND_API_KEY.includes('REPLACE')) return; // skip if no key
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: "Housing Etiquette 101 <onboarding@resend.dev>",
+        to: [to],
+        subject,
+        html
+      })
+    });
+  } catch(e) { console.log('Email send failed:', e.message); }
+};
+
 const sendNotification = async (type, participant, module, caseManagerEmail) => {
   try {
     const isComplete = type === 'program_complete';
     const msg = isComplete
-      ? `🏆 ${participant.name} has completed all 8 modules of Housing Etiquette 101 and earned their Certificate of Completion!`
-      : `✅ ${participant.name} completed Module ${module} of Housing Etiquette 101.`;
+      ? `${participant.name} has completed all 8 modules of Housing Etiquette 101 and earned their Certificate of Completion!`
+      : `${participant.name} completed Module ${module} of Housing Etiquette 101.`;
 
-    // Notify participant
+    // Save to Supabase notifications table
     await supabase.insert('notifications', {
       type,
       participant_name: participant.name,
@@ -115,7 +139,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
       read: false
     }).catch(() => {});
 
-    // Notify agency case manager
+    // Agency notification record
     if (participant.agency) {
       await supabase.insert('notifications', {
         type: type + '_agency',
@@ -129,7 +153,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
       }).catch(() => {});
     }
 
-    // Notify HE101 admin (super admin record)
+    // Admin record
     await supabase.insert('notifications', {
       type: type + '_admin',
       participant_name: participant.name,
@@ -141,8 +165,61 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
       read: false
     }).catch(() => {});
 
+    // ── SEND REAL EMAILS ──────────────────────────────────────────────────────
+
+    // 1. Email to HE101 Admin
+    const adminSubject = isComplete
+      ? `🏆 Program Complete: ${participant.name}`
+      : `✅ Module ${module} Complete: ${participant.name}`;
+    const adminHtml = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
+        <div style="background:#1B2A4A;padding:24px;border-radius:8px 8px 0 0">
+          <h2 style="color:white;margin:0">Housing Etiquette 101</h2>
+          <p style="color:#00A3A3;margin:4px 0 0">Participant Progress Notification</p>
+        </div>
+        <div style="background:#F9F9F9;padding:24px;border-radius:0 0 8px 8px">
+          <h3 style="color:#1B2A4A">${isComplete ? '🏆 Program Complete!' : '✅ Module Complete'}</h3>
+          <p style="color:#444">${msg}</p>
+          <table style="width:100%;border-collapse:collapse;margin-top:16px">
+            <tr><td style="padding:8px;background:#EEE;font-weight:bold">Participant</td><td style="padding:8px">${participant.name}</td></tr>
+            <tr><td style="padding:8px;background:#EEE;font-weight:bold">Email</td><td style="padding:8px">${participant.email || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;background:#EEE;font-weight:bold">Agency</td><td style="padding:8px">${participant.agency || 'Self-enrolled'}</td></tr>
+            ${!isComplete ? `<tr><td style="padding:8px;background:#EEE;font-weight:bold">Module</td><td style="padding:8px">Module ${module}</td></tr>` : ''}
+            <tr><td style="padding:8px;background:#EEE;font-weight:bold">Date</td><td style="padding:8px">${new Date().toLocaleDateString()}</td></tr>
+          </table>
+          <p style="color:#888;font-size:12px;margin-top:20px">This is an automated notification from Housing Etiquette 101.</p>
+        </div>
+      </div>`;
+    await sendEmail(ADMIN_EMAIL, adminSubject, adminHtml);
+
+    // 2. Email to participant if they have an email
+    if(participant.email && participant.email.includes('@')){
+      const partSubject = isComplete
+        ? 'Congratulations! You completed Housing Etiquette 101!'
+        : `Great work! You completed Module ${module}`;
+      const partHtml = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
+          <div style="background:#1B2A4A;padding:24px;border-radius:8px 8px 0 0">
+            <h2 style="color:white;margin:0">Housing Etiquette 101</h2>
+          </div>
+          <div style="background:#F9F9F9;padding:24px;border-radius:0 0 8px 8px">
+            <h3 style="color:#1B2A4A">Hi ${participant.name.split(' ')[0]},</h3>
+            <p style="color:#444">${isComplete
+              ? 'Congratulations on completing all 8 modules of Housing Etiquette 101! Your certificate has been issued. Log in to download it.'
+              : `Great job completing Module ${module}! Keep going — you are making real progress toward stable housing.`}</p>
+            <div style="text-align:center;margin:24px 0">
+              <a href="https://he101-app.vercel.app" style="background:#CC5500;color:white;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:bold">
+                ${isComplete ? 'Download Your Certificate' : 'Continue Your Modules'}
+              </a>
+            </div>
+            <p style="color:#888;font-size:12px">Questions? Contact us at ${ADMIN_EMAIL} or call (515) 681-3143.</p>
+          </div>
+        </div>`;
+      await sendEmail(participant.email, partSubject, partHtml);
+    }
+
   } catch(err) {
-    console.log('Notification logged:', type, participant.name);
+    console.log('Notification error:', type, participant.name, err.message);
   }
 };
 
