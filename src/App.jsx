@@ -920,7 +920,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null);const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"N/A";})()}</div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"Pending";})()}</div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -1180,7 +1180,9 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                             setQuizScore(correct);
                             setQuizSubmitted(true);
                             markSectionDone("quiz");
-                            onComplete(mod.id,{status:"in_progress",score:correct,total:questions.length,date:new Date().toISOString().split("T")[0],time:15,quizDone:true});
+                            const pctScore = Math.round((correct/questions.length)*100);
+                            const passed = pctScore >= 70;
+                            onComplete(mod.id,{status:passed?"in_progress":"attempted",score:correct,total:questions.length,date:new Date().toISOString().split("T")[0],time:15,quizDone:true,passed});
                           }}
                             style={{background:mod.color,color:"white",border:"none",borderRadius:8,padding:"14px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
                             ✅ Submit Quiz
@@ -1201,7 +1203,8 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                         {quizScore}/{questions.length} Correct
                       </div>
                       <div style={{fontSize:32,fontWeight:900,color:passed?B.green:B.orange,marginBottom:8}}>{pct}%</div>
-                      <div style={{fontSize:14,color:passed?"#2E7D32":B.orange,fontWeight:700,marginBottom:16}}>{passed?"✅ Passed — Great work!":"📖 Review the material and try again"}</div>
+                      <div style={{fontSize:14,color:passed?"#2E7D32":"#C62828",fontWeight:700,marginBottom:8}}>{passed?"✅ Passed — Great work! You scored "+pct+"%.":"❌ Not Passed — You need 70% to pass. You scored "+pct+"%."}</div>
+                      {!passed&&<button onClick={()=>{setQuizSubmitted(false);setQuizAnswers({});setQuizScore(null);}} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:12,width:"100%"}}>🔄 Retake Quiz</button>}
                       <div style={{background:passed?"#EAF7EA":"#FFF3E0",borderRadius:8,padding:"10px 16px",marginBottom:16,fontSize:12,color:B.gray}}>Score saved to your record · Case manager notified</div>
                     </Card>
                     {questions.map((q,qi)=>(
@@ -1971,7 +1974,7 @@ export default function HE101App() {
           <div style={{fontSize:11,fontWeight:700,color:B.navy,marginBottom:8,textAlign:"center",letterSpacing:"0.06em"}}>ENROLLMENT OPTIONS</div>
           <div style={{display:"flex",gap:8,marginBottom:8}}>
             <div style={{flex:1,background:B.white,border:`1.5px solid ${B.orange}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>{showToast("Individual enrollment — $75. Contact housingetiquette101.org to enroll.");}}>
+              onClick={()=>setShowIndividualForm(true)}}>
               <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Individual</div>
               <div style={{fontSize:18,fontWeight:900,color:B.orange}}>$75</div>
               <div style={{fontSize:9,color:B.gray}}>per person</div>
@@ -1996,6 +1999,79 @@ export default function HE101App() {
         </div>
 
         {/* SPONSORSHIP APPLICATION POPUP */}
+        {showIndividualForm&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+            <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>👤 Individual Enrollment — $75</div>
+                <button onClick={()=>setShowIndividualForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>✕</button>
+              </div>
+              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to complete your enrollment and process payment.</div>
+              {[
+                {label:"Full Name *",field:"name",ph:"Your full name"},
+                {label:"Email Address *",field:"email",ph:"your@email.com"},
+                {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
+                {label:"City",field:"city",ph:"Your city"},
+                {label:"State",field:"state",ph:"IA"},
+              ].map(f=>(
+                <div key={f.field} style={{marginBottom:10}}>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
+                  <input value={individualForm[f.field]} onKeyDown={e=>e.stopPropagation()} onChange={e=>setIndividualForm(p=>({...p,[f.field]:e.target.value}))}
+                    placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
+                </div>
+              ))}
+              <button onClick={async()=>{
+                if(!individualForm.name||!individualForm.email||!individualForm.phone){showToast("Please fill in all required fields.");return;}
+                try{
+                  await supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false});
+                  showToast("✅ Request received! We will contact you within 1 business day.");
+                  setIndividualForm({name:"",email:"",phone:"",city:"",state:"IA"});
+                  setShowIndividualForm(false);
+                }catch(e){showToast("Error submitting. Please email us directly.");}
+              }} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
+                Submit Enrollment Request
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showAgencyForm&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+            <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>🏢 Agency Enrollment — $100/participant</div>
+                <button onClick={()=>setShowAgencyForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>✕</button>
+              </div>
+              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to set up your agency account and discuss billing.</div>
+              {[
+                {label:"Agency Name *",field:"agencyName",ph:"Your organization name"},
+                {label:"Contact Name *",field:"contactName",ph:"Your full name"},
+                {label:"Email Address *",field:"email",ph:"your@agency.org"},
+                {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
+                {label:"City",field:"city",ph:"Your city"},
+                {label:"Estimated Participants",field:"participants",ph:"How many participants per month?"},
+              ].map(f=>(
+                <div key={f.field} style={{marginBottom:10}}>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
+                  <input value={agencyForm[f.field]} onKeyDown={e=>e.stopPropagation()} onChange={e=>setAgencyForm(p=>({...p,[f.field]:e.target.value}))}
+                    placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
+                </div>
+              ))}
+              <button onClick={async()=>{
+                if(!agencyForm.agencyName||!agencyForm.contactName||!agencyForm.email||!agencyForm.phone){showToast("Please fill in all required fields.");return;}
+                try{
+                  await supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false});
+                  showToast("✅ Request received! We will contact you within 1 business day.");
+                  setAgencyForm({agencyName:"",contactName:"",email:"",phone:"",city:"",participants:""});
+                  setShowAgencyForm(false);
+                }catch(e){showToast("Error submitting. Please email us directly.");}
+              }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
+                Submit Agency Request
+              </button>
+            </div>
+          </div>
+        )}
+
         {showSponsorForm&&(
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
             <div style={{background:"white",borderRadius:16,maxWidth:480,width:"100%",maxHeight:"85vh",overflow:"auto",padding:24}}>
@@ -2138,38 +2214,39 @@ export default function HE101App() {
         {/* CONTACT MODAL */}
         {showContact&&(
           <Modal title="Contact Housing Etiquette 101" onClose={()=>setShowContact(false)}>
-            <div style={{fontSize:13,color:B.gray,marginBottom:16,lineHeight:1.6}}>Have a question? Need help with the platform? Interested in a partnership? We respond within 1 business day.</div>
-            {[
-              {label:"Your Name *",field:"name",ph:"Full name"},
-              {label:"Email Address *",field:"email",ph:"your@email.com"},
-              {label:"Phone Number",field:"phone",ph:"e.g. 515-555-1234"},
-              {label:"Organization",field:"org",ph:"Agency or company name if applicable"},
-            ].map(f=>(
-              <div key={f.field} style={{marginBottom:10}}>
-                <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input 
-                  value={contactForm[f.field]} 
-                  onChange={e=>{e.stopPropagation();setContactForm(p=>({...p,[f.field]:e.target.value}))}}
-                  onKeyDown={e=>e.stopPropagation()}
-                  placeholder={f.ph} 
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
+            <div style={{fontSize:13,color:B.gray,marginBottom:20,lineHeight:1.6}}>Have a question or want to partner with us? Reach out directly — we respond within 1 business day.</div>
+            <div style={{display:"flex",flexDirection:"column",gap:14}}>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
+                <div style={{fontSize:24}}>📞</div>
+                <div>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>PHONE</div>
+                  <a href="tel:+15153334455" style={{fontSize:15,fontWeight:700,color:B.navy,textDecoration:"none"}}>(515) 333-4455</a>
+                </div>
               </div>
-            ))}
-            <div style={{marginBottom:14}}>
-              <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>Message *</div>
-              <textarea 
-                value={contactForm.message} 
-                onChange={e=>{e.stopPropagation();setContactForm(p=>({...p,message:e.target.value}))}}
-                onKeyDown={e=>e.stopPropagation()}
-                placeholder="How can we help you?" 
-                rows={5} 
-                style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"vertical",boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
+                <div style={{fontSize:24}}>✉️</div>
+                <div>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>EMAIL</div>
+                  <a href="mailto:info@housingetiquette101.org" style={{fontSize:15,fontWeight:700,color:B.teal,textDecoration:"none"}}>info@housingetiquette101.org</a>
+                </div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
+                <div style={{fontSize:24}}>🌐</div>
+                <div>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>WEBSITE</div>
+                  <a href="https://housingetiquette101.org" target="_blank" rel="noopener noreferrer" style={{fontSize:15,fontWeight:700,color:B.teal,textDecoration:"none"}}>housingetiquette101.org</a>
+                </div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#F8F9FA",borderRadius:10,padding:"14px 16px"}}>
+                <div style={{fontSize:24}}>📍</div>
+                <div>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:2}}>LOCATION</div>
+                  <div style={{fontSize:14,fontWeight:700,color:B.navy}}>Des Moines, Iowa</div>
+                </div>
+              </div>
             </div>
-            <button onClick={submitContact} style={{background:B.teal,color:"white",border:"none",borderRadius:6,padding:"11px 24px",fontSize:13,fontWeight:700,cursor:"pointer",width:"100%"}}>
-              Send Message
-            </button>
-            <div style={{textAlign:"center",marginTop:12,fontSize:12,color:B.gray}}>
-              Or email us directly at <strong>housingetiquette101.org</strong>
+            <div style={{marginTop:16,textAlign:"center",fontSize:12,color:B.gray,lineHeight:1.6}}>
+              For agency partnerships and white-label licensing, please email us directly.
             </div>
           </Modal>
         )}
