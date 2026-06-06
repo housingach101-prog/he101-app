@@ -920,7 +920,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"Pending";})()}</div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const e=mods.reduce((a,m)=>a+(m.score||0),0);const p=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((e/p)*100)+"%":"Pending";})()}</div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null);const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"N/A";})()}</div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -1180,9 +1180,7 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                             setQuizScore(correct);
                             setQuizSubmitted(true);
                             markSectionDone("quiz");
-                            const pctScore = Math.round((correct/questions.length)*100);
-                            const passed = pctScore >= 70;
-                            onComplete(mod.id,{status:passed?"in_progress":"attempted",score:correct,total:questions.length,date:new Date().toISOString().split("T")[0],time:15,quizDone:true,passed});
+                            const pctScore=Math.round((correct/questions.length)*100);const passed=pctScore>=70;onComplete(mod.id,{status:passed?"in_progress":"attempted",score:correct,total:questions.length,date:new Date().toISOString().split("T")[0],time:15,quizDone:true,passed});
                           }}
                             style={{background:mod.color,color:"white",border:"none",borderRadius:8,padding:"14px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
                             ✅ Submit Quiz
@@ -1203,8 +1201,8 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
                         {quizScore}/{questions.length} Correct
                       </div>
                       <div style={{fontSize:32,fontWeight:900,color:passed?B.green:B.orange,marginBottom:8}}>{pct}%</div>
-                      <div style={{fontSize:14,color:passed?"#2E7D32":"#C62828",fontWeight:700,marginBottom:8}}>{passed?"✅ Passed — Great work! You scored "+pct+"%.":"❌ Not Passed — You need 70% to pass. You scored "+pct+"%."}</div>
-                      {!passed&&<button onClick={()=>{setQuizSubmitted(false);setQuizAnswers({});setQuizScore(null);}} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:12,width:"100%"}}>🔄 Retake Quiz</button>}
+                      <div style={{fontSize:14,color:passed?"#2E7D32":"#C62828",fontWeight:700,marginBottom:8}}>{passed?"Passed — Great work! You scored "+pct+"%.":"Not Passed — You need 70% to pass. You scored "+pct+"%. Try again."}</div>
+                      {!passed&&<button onClick={()=>{setQuizSubmitted(false);setQuizAnswers({});setQuizScore(null);}} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:12,width:"100%"}}>Retake Quiz</button>}
                       <div style={{background:passed?"#EAF7EA":"#FFF3E0",borderRadius:8,padding:"10px 16px",marginBottom:16,fontSize:12,color:B.gray}}>Score saved to your record · Case manager notified</div>
                     </Card>
                     {questions.map((q,qi)=>(
@@ -2007,8 +2005,8 @@ export default function HE101App() {
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
             <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>👤 Individual Enrollment — $75</div>
-                <button onClick={()=>setShowIndividualForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>✕</button>
+                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>Individual Enrollment — $75</div>
+                <button onClick={()=>setShowIndividualForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>X</button>
               </div>
               <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to complete your enrollment and process payment.</div>
               {[
@@ -2020,33 +2018,32 @@ export default function HE101App() {
               ].map(f=>(
                 <div key={f.field} style={{marginBottom:10}}>
                   <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                  <input value={individualForm[f.field]} onKeyDown={e=>e.stopPropagation()} onChange={e=>setIndividualForm(p=>({...p,[f.field]:e.target.value}))}
+                  <input value={individualForm[f.field]||""} onKeyDown={e=>e.stopPropagation()} onFocus={e=>e.stopPropagation()}
+                    onChange={e=>{e.stopPropagation();setIndividualForm(p=>({...p,[f.field]:e.target.value}));}}
                     placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
                 </div>
               ))}
               <button onClick={()=>{
                 if(!individualForm.name||!individualForm.email||!individualForm.phone){showToast("Please fill in all required fields.");return;}
-                try{
-                  supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false});
-                  showToast("✅ Request received! We will contact you within 1 business day.");
+                supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false}).then(()=>{
+                  showToast("Request received! We will contact you within 1 business day.");
                   setIndividualForm({name:"",email:"",phone:"",city:"",state:"IA"});
                   setShowIndividualForm(false);
-                }catch(e){showToast("Error submitting. Please email us directly.");}
+                }).catch(()=>showToast("Error submitting. Please email us directly."));
               }} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
                 Submit Enrollment Request
               </button>
             </div>
           </div>
         )}
-
         {showAgencyForm&&(
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
             <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>🏢 Agency Enrollment — $100/participant</div>
-                <button onClick={()=>setShowAgencyForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>✕</button>
+                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>Agency Enrollment — $100/participant</div>
+                <button onClick={()=>setShowAgencyForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>X</button>
               </div>
-              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to set up your agency account and discuss billing.</div>
+              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to set up your agency account.</div>
               {[
                 {label:"Agency Name *",field:"agencyName",ph:"Your organization name"},
                 {label:"Contact Name *",field:"contactName",ph:"Your full name"},
@@ -2057,25 +2054,24 @@ export default function HE101App() {
               ].map(f=>(
                 <div key={f.field} style={{marginBottom:10}}>
                   <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                  <input value={agencyForm[f.field]} onKeyDown={e=>e.stopPropagation()} onChange={e=>setAgencyForm(p=>({...p,[f.field]:e.target.value}))}
+                  <input value={agencyForm[f.field]||""} onKeyDown={e=>e.stopPropagation()} onFocus={e=>e.stopPropagation()}
+                    onChange={e=>{e.stopPropagation();setAgencyForm(p=>({...p,[f.field]:e.target.value}));}}
                     placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
                 </div>
               ))}
               <button onClick={()=>{
                 if(!agencyForm.agencyName||!agencyForm.contactName||!agencyForm.email||!agencyForm.phone){showToast("Please fill in all required fields.");return;}
-                try{
-                  supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false});
-                  showToast("✅ Request received! We will contact you within 1 business day.");
+                supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false}).then(()=>{
+                  showToast("Request received! We will contact you within 1 business day.");
                   setAgencyForm({agencyName:"",contactName:"",email:"",phone:"",city:"",participants:""});
                   setShowAgencyForm(false);
-                }catch(e){showToast("Error submitting. Please email us directly.");}
+                }).catch(()=>showToast("Error submitting. Please email us directly."));
               }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
                 Submit Agency Request
               </button>
             </div>
           </div>
         )}
-
         {showSponsorForm&&(
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
             <div style={{background:"white",borderRadius:16,maxWidth:480,width:"100%",maxHeight:"85vh",overflow:"auto",padding:24}}>
@@ -2282,7 +2278,7 @@ export default function HE101App() {
 
           {pct===100&&(
             <Card style={{background:"linear-gradient(135deg,#FFF8E1,#FFFDE7)",border:`2px solid ${B.gold}`,textAlign:"center"}}>
-              <div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:36,marginBottom:6}}>🏆</div>
+              <div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:36,marginBottom:6}}>🏆</div>
               <div style={{fontWeight:700,color:B.navy,fontSize:17,marginBottom:4}}>You're Certified!</div>
               <div style={{color:B.gray,fontSize:12,marginBottom:12}}>Cert ID: {u.certId} · Issued: {u.certDate}</div>
               <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy,marginBottom:8}}>🏆 View and Download Certificate</Btn><Btn onClick={logout} color={B.navy} full>Exit Program</Btn>
@@ -3025,3 +3021,4 @@ export default function HE101App() {
     </div>
   );
 }
+
