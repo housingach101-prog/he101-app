@@ -2278,7 +2278,7 @@ export default function HE101App() {
 
           {pct===100&&(
             <Card style={{background:"linear-gradient(135deg,#FFF8E1,#FFFDE7)",border:`2px solid ${B.gold}`,textAlign:"center"}}>
-              <div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:36,marginBottom:6}}>🏆</div>
+              <div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:36,marginBottom:6}}>🏆</div>
               <div style={{fontWeight:700,color:B.navy,fontSize:17,marginBottom:4}}>You're Certified!</div>
               <div style={{color:B.gray,fontSize:12,marginBottom:12}}>Cert ID: {u.certId} · Issued: {u.certDate}</div>
               <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy,marginBottom:8}}>🏆 View and Download Certificate</Btn><Btn onClick={logout} color={B.navy} full>Exit Program</Btn>
@@ -2369,64 +2369,70 @@ export default function HE101App() {
 
         {/* INTAKE FORM MODAL */}
         {showIntakeForm&&(
-          <Modal title="📋 Participant Intake Form" onClose={()=>setShowIntakeForm(false)}>
-            <div style={{fontSize:13,color:B.gray,marginBottom:16,lineHeight:1.6}}>Complete this form to help your case manager track your progress. Fields marked * are required.</div>
-            {[
-              {label:"Full Legal Name *",field:"name",ph:"As it appears on your ID"},
-              {label:"Email Address *",field:"email",ph:"Your best email address"},
-              {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
-              {label:"Date of Birth",field:"dob",ph:"MM/DD/YYYY"},
-              {label:"Referring Agency",field:"agency",ph:"Name of agency that referred you"},
-              {label:"Case Manager Name",field:"referredBy",ph:"Who is your case manager?"},
-              {label:"City",field:"city",ph:"Your city"},
-              {label:"State",field:"state",ph:"IA"},
-            ].map(f=>(
-              <div key={f.field} style={{marginBottom:10}}>
-                <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input
-                  value={intakeForm[f.field]||""}
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+            <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:460,maxHeight:"90vh",overflowY:"auto"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>Participant Intake Form</div>
+                <button onClick={()=>setShowIntakeForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>X</button>
+              </div>
+              <div style={{fontSize:13,color:B.gray,marginBottom:16,lineHeight:1.6}}>Complete this form to help your case manager track your progress. Fields marked * are required.</div>
+              {[
+                {label:"Full Legal Name *",field:"name",ph:"As it appears on your ID"},
+                {label:"Email Address *",field:"email",ph:"Your best email address"},
+                {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
+                {label:"Date of Birth",field:"dob",ph:"MM/DD/YYYY"},
+                {label:"Referring Agency",field:"agency",ph:"Name of agency that referred you"},
+                {label:"Case Manager Name",field:"referredBy",ph:"Who is your case manager?"},
+                {label:"City",field:"city",ph:"Your city"},
+                {label:"State",field:"state",ph:"IA"},
+              ].map(f=>(
+                <div key={f.field} style={{marginBottom:10}}>
+                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
+                  <input
+                    value={intakeForm[f.field]||""}
+                    onKeyDown={e=>e.stopPropagation()}
+                    onFocus={e=>e.stopPropagation()}
+                    onChange={e=>{e.stopPropagation();setIntakeForm(p=>({...p,[f.field]:e.target.value}));}}
+                    placeholder={f.ph}
+                    style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
+                </div>
+              ))}
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>Current Housing Situation</div>
+                <select value={intakeForm.currentSituation||""} onChange={e=>setIntakeForm(p=>({...p,currentSituation:e.target.value}))}
+                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}>
+                  <option value="">Select your current situation...</option>
+                  <option value="housed_stable">Currently housed and stable</option>
+                  <option value="housed_at_risk">Currently housed but at risk of eviction</option>
+                  <option value="transitional">In transitional or temporary housing</option>
+                  <option value="shelter">In emergency shelter</option>
+                  <option value="recently_housed">Recently housed through a program</option>
+                  <option value="seeking_housing">Currently seeking housing</option>
+                </select>
+              </div>
+              <div style={{marginBottom:16}}>
+                <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>What is your main housing goal?</div>
+                <textarea
+                  value={intakeForm.housingGoal||""}
                   onKeyDown={e=>e.stopPropagation()}
                   onFocus={e=>e.stopPropagation()}
-                  onChange={e=>{e.stopPropagation();setIntakeForm(p=>({...p,[f.field]:e.target.value}));}}
-                  placeholder={f.ph}
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
+                  onChange={e=>{e.stopPropagation();setIntakeForm(p=>({...p,housingGoal:e.target.value}));}}
+                  placeholder="Briefly describe what you hope to achieve through this program..."
+                  rows={3}
+                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"vertical",boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
               </div>
-            ))}
-            <div style={{marginBottom:10}}>
-              <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>Current Housing Situation</div>
-              <select value={intakeForm.currentSituation||""} onChange={e=>setIntakeForm(p=>({...p,currentSituation:e.target.value}))}
-                style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}>
-                <option value="">Select your current situation...</option>
-                <option value="housed_stable">Currently housed and stable</option>
-                <option value="housed_at_risk">Currently housed but at risk of eviction</option>
-                <option value="transitional">In transitional or temporary housing</option>
-                <option value="shelter">In emergency shelter</option>
-                <option value="recently_housed">Recently housed through a program</option>
-                <option value="seeking_housing">Currently seeking housing</option>
-              </select>
+              <button onClick={()=>{
+                if(!intakeForm.name||!intakeForm.email||!intakeForm.phone){showToast("Please fill in all required fields.");return;}
+                supabase.insert('notifications',{type:'intake_form',participant_name:intakeForm.name,participant_id:null,agency_id:null,message:JSON.stringify(intakeForm),created_at:new Date().toISOString(),read:false}).then(()=>{
+                  showToast("Intake form submitted! Your case manager has been notified.");
+                  setIntakeForm({name:"",email:"",phone:"",dob:"",agency:"",referredBy:"",city:"",state:"IA",currentSituation:"",housingGoal:""});
+                  setShowIntakeForm(false);
+                }).catch(()=>showToast("Submission failed. Please try again."));
+              }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
+                Submit Intake Form
+              </button>
             </div>
-            <div style={{marginBottom:16}}>
-              <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>What is your main housing goal?</div>
-              <textarea
-                value={intakeForm.housingGoal||""}
-                onKeyDown={e=>e.stopPropagation()}
-                onFocus={e=>e.stopPropagation()}
-                onChange={e=>{e.stopPropagation();setIntakeForm(p=>({...p,housingGoal:e.target.value}));}}
-                placeholder="Briefly describe what you hope to achieve through this program..."
-                rows={3}
-                style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,resize:"vertical",boxSizing:"border-box",fontFamily:"Montserrat,sans-serif"}}/>
-            </div>
-            <button onClick={()=>{
-              if(!intakeForm.name||!intakeForm.email||!intakeForm.phone){showToast("Please fill in all required fields.");return;}
-              supabase.insert('notifications',{type:'intake_form',participant_name:intakeForm.name,participant_id:null,agency_id:null,message:JSON.stringify(intakeForm),created_at:new Date().toISOString(),read:false}).then(()=>{
-                showToast("Intake form submitted! Your case manager has been notified.");
-                setIntakeForm({name:"",email:"",phone:"",dob:"",agency:"",referredBy:"",city:"",state:"IA",currentSituation:"",housingGoal:""});
-                setShowIntakeForm(false);
-              }).catch(()=>showToast("Submission failed. Please try again."));
-            }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
-              Submit Intake Form
-            </button>
-          </Modal>
+          </div>
         )}
         <div style={{background:B.navy,padding:"16px 20px",marginTop:20,textAlign:"center"}}>
           <div style={{display:"flex",justifyContent:"center",gap:20,marginBottom:8,flexWrap:"wrap"}}>
