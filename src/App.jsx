@@ -1978,7 +1978,7 @@ export default function HE101App() {
           <div style={{fontSize:11,fontWeight:700,color:B.navy,marginBottom:8,textAlign:"center",letterSpacing:"0.06em"}}>ENROLLMENT OPTIONS</div>
           <div style={{display:"flex",gap:8,marginBottom:8}}>
             <div style={{flex:1,background:B.white,border:`1.5px solid ${B.orange}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>setShowIndividualForm(true)}}>
+              onClick={()=>setShowIndividualForm(true)}>
               <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Individual</div>
               <div style={{fontSize:18,fontWeight:900,color:B.orange}}>$75</div>
               <div style={{fontSize:9,color:B.gray}}>per person</div>
