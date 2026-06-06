@@ -1749,6 +1749,10 @@ export default function HE101App() {
 
   // ─── SPONSORSHIP STATE ──────────────────────────────────────────────────────
   const [showSponsorForm, setShowSponsorForm] = useState(false);
+  const [showIndividualForm, setShowIndividualForm] = useState(false);
+  const [showAgencyForm, setShowAgencyForm] = useState(false);
+  const [individualForm, setIndividualForm] = useState({name:"",email:"",phone:"",city:"",state:"IA"});
+  const [agencyForm, setAgencyForm] = useState({agencyName:"",contactName:"",email:"",phone:"",city:"",participants:""});
   const [sponsorRequests, setSponsorRequests] = useState([
     { id: 1, name: "Sample Applicant", email: "sample@email.com", agency: "ACH001", reason: "Referred by case manager for eviction prevention", status: "pending", date: "2026-04-24" }
   ]);
@@ -1981,7 +1985,7 @@ export default function HE101App() {
               <div style={{fontSize:9,color:B.navy,marginTop:3,fontWeight:600}}>Self-enrollment</div>
             </div>
             <div style={{flex:1,background:B.white,border:`1.5px solid ${B.teal}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>{showToast("Agency enrollment — $100 per participant. Contact housingetiquette101.org to get started.");}}>
+              onClick={()=>setShowAgencyForm(true)}>
               <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Agency</div>
               <div style={{fontSize:18,fontWeight:900,color:B.teal}}>$100</div>
               <div style={{fontSize:9,color:B.gray}}>per participant</div>
