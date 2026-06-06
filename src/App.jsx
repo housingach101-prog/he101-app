@@ -614,7 +614,7 @@ const MODULES = [
       ],
       reflection: [
         "What does being a good renter mean to you?",
-        "Which S.H.I.T. trait is easiest for you to use? How can it help you with the others?",
+        "Which S.H.I.T. trait is easiest for you? How can it help you with the others?",
         "Name one thing you can do each week to feel more in charge of your housing.",
       ],
     },
@@ -642,7 +642,7 @@ const MODULES = [
       reflection: [
         "What does being a good neighbor look like to you?",
         "What is the hardest part of living near other people? How can you handle it better?",
-        "How do your actions in your home affect the people who live around you?",
+        "How do your actions at home affect the people around you?",
       ],
     },
     scenarios: [
@@ -721,9 +721,9 @@ const MODULES = [
       purpose: "This module explains your responsibility to care for your housing unit. Proper unit care protects housing, deposits, and rental history.",
       keyPoints: ["What unit care and housekeeping mean in practice", "The difference between normal wear and damage", "Why renters are responsible for guest-caused damage", "How proper care protects housing stability and your record"],
       reflection: [
-        "What does a home you are proud of look like? What is one thing you will do to keep it that way?",
+        "What does a home you are proud of look like? What will you do to keep it that way?",
         "What kind of renter do you want to be known as?",
-        "If you moved into a new place tomorrow, what would you write down on day one to protect yourself?",
+        "If you moved into a new place tomorrow, what would you write down on day one?",
       ],
     },
     scenarios: [
@@ -748,7 +748,7 @@ const MODULES = [
       purpose: "This module explains how maintenance, inspections, and recertification work. Understanding these processes helps prevent violations and loss of housing.",
       keyPoints: ["How maintenance requests work and why to document them", "Why inspections are required and what your rights are", "What recertification means and what documents are needed", "How cooperation with all three processes protects housing stability"],
       reflection: [
-        "What is one thing you will do to make sure you report problems in your home right away?",
+        "What is one thing you will do to report problems in your home right away?",
         "How will you keep your housing papers organized so you never miss a deadline?",
         "How can you look at an inspection as a good thing instead of something to stress about?",
       ],
@@ -777,7 +777,7 @@ const MODULES = [
       reflection: [
         "How do you want to talk to your landlord and neighbors to protect your housing?",
         "Why is it important to respond to a housing notice fast? What will help you stay on top of it?",
-        "Name one communication habit you will commit to as a renter starting today.",
+        "What is one specific communication habit you are committing to as a renter that will help you maintain a positive and stable tenancy?",
       ],
     },
     scenarios: [
@@ -803,7 +803,7 @@ const MODULES = [
       keyPoints: ["What eviction means legally and practically", "Common eviction notices and what each requires", "What happens in court and your rights", "How eviction affects your housing record", "Steps to protect housing stability"],
       reflection: [
         "What does having stable housing mean to you and the people who count on you?",
-        "What resources — like rental help or legal aid — do you want to know more about before you need them?",
+        "What resources like rental help or legal aid do you want to know more about before you need them? — rental assistance, legal aid, or mediation — do you want to learn more about so you are prepared before you ever need them?",
         "Who do you want to be as a renter when things get hard? What can you do today to get ready?",
       ],
     },
@@ -920,10 +920,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555",marginTop:4}}>
-            Overall Score: <strong style={{color:B.teal}}>{(()=>{const mods=Object.values(user.modules||{});const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return possible>0?Math.round((earned/possible)*100)+'%':'N/A';})()}</strong>
-          </div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {Math.round((Object.values(user.modules||{}).reduce((a,m)=>a+(m.score||0),0)/Math.max(1,Object.values(user.modules||{}).reduce((a,m)=>a+(m.total||10),0)))*100)}%</div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -1045,21 +1042,15 @@ const ModuleDetail = ({mod,userMod,onComplete,onClose})=>{
               />
             </div>
             <div style={{padding:"16px 20px"}}>
-              {!sectionsDone.video?(
-                <div>
+              <div>
                   <div style={{fontSize:12,color:"#666",marginBottom:12,lineHeight:1.6,background:"#FFF8E1",padding:"10px 14px",borderRadius:8,border:"1px solid #F9A825"}}>
-                    ⚠️ Watch the complete video above then click the button below to confirm you have finished watching before moving on to the Learn section.
+                    Watch the complete video above then click the button below before moving on.
                   </div>
                   <button onClick={()=>{markSectionDone("video");setVideoWatched(true);setTab("learn");}}
                     style={{background:mod.color,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
-                    ✅ I Have Watched the Full Video — Continue to Learn
+                    I Have Watched the Full Video - Continue to Learn
                   </button>
                 </div>
-              ):(
-                <div style={{background:"#EAF7EA",border:"1px solid #4CAF50",borderRadius:8,padding:"12px 16px",textAlign:"center"}}>
-                  <span style={{fontSize:13,color:"#2E7D32",fontWeight:700}}>✅ Video completed — you may continue to the next sections</span>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -2149,14 +2140,14 @@ export default function HE101App() {
           <Modal title="Contact Housing Etiquette 101" onClose={()=>setShowContact(false)}>
             <div style={{fontSize:13,color:B.gray,marginBottom:16,lineHeight:1.6}}>Have a question? Need help with the platform? Interested in a partnership? We respond within 1 business day.</div>
             {[
-              {label:"Your Name *",field:"name",ph:"Full name",type:"text"},
-              {label:"Email Address *",field:"email",ph:"your@email.com",type:"email"},
-              {label:"Phone Number",field:"phone",ph:"e.g. 515-555-1234",type:"tel"},
-              {label:"Organization",field:"org",ph:"Agency or company name if applicable",type:"text"},
+              {label:"Your Name *",field:"name",ph:"Full name"},
+              {label:"Email Address *",field:"email",ph:"your@email.com"},
+              {label:"Phone Number",field:"phone",ph:"e.g. 515-555-1234"},
+              {label:"Organization",field:"org",ph:"Agency or company name if applicable"},
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input type={f.type||"text"} value={contactForm[f.field]} onChange={e=>setContactForm(p=>({...p,[f.field]:e.target.value}))}
+                <input value={contactForm[f.field]} onChange={e=>setContactForm(p=>({...p,[f.field]:e.target.value}))}
                   placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
@@ -2201,15 +2192,10 @@ export default function HE101App() {
 
           {pct===100&&(
             <Card style={{background:"linear-gradient(135deg,#FFF8E1,#FFFDE7)",border:`2px solid ${B.gold}`,textAlign:"center"}}>
-              <div style={{fontSize:56,marginBottom:8}}>🎉</div>
-              <div style={{fontWeight:900,color:B.navy,fontSize:20,marginBottom:4,fontFamily:"Playfair Display,Georgia,serif"}}>Congratulations! You Did It!</div>
-              <div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules of Housing Etiquette 101.</div>
-              <div style={{fontSize:36,marginBottom:6}}>🏆</div>
+              <div style={{fontSize:52,marginBottom:8}}>🎉</div><div style={{fontWeight:900,color:B.navy,fontSize:18,marginBottom:6}}>Congratulations! You Did It!</div><div style={{fontSize:13,color:B.gray,marginBottom:12}}>You have completed all 8 modules.</div><div style={{fontSize:36,marginBottom:6}}>🏆</div>
               <div style={{fontWeight:700,color:B.navy,fontSize:17,marginBottom:4}}>You're Certified!</div>
               <div style={{color:B.gray,fontSize:12,marginBottom:12}}>Cert ID: {u.certId} · Issued: {u.certDate}</div>
-              <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy,marginBottom:8}}>🏆 View & Download Certificate</Btn>
-              <Btn onClick={logout} color={B.navy} full style={{marginTop:8}}>✅ Exit Program</Btn>
-              {/* hidden for spacing */}<span style={{display:'none'}}>Print Certificate</Btn>
+              <Btn onClick={()=>setCertUser(u)} color={B.gold} style={{color:B.navy,marginBottom:8}}>🏆 View and Download Certificate</Btn><Btn onClick={logout} color={B.navy} full>Exit Program</Btn>
             </Card>
           )}
 
@@ -2302,14 +2288,14 @@ export default function HE101App() {
             {[
               {label:"Full Legal Name *",field:"name",ph:"As it appears on your ID"},
               {label:"Email Address *",field:"email",ph:"Your best email address"},
-              {label:"Phone Number",field:"phone",ph:"Best number to reach you"},
+              {label:"Phone Number",field:"phone",ph:"e.g. 515-555-1234"},
               {label:"Date of Birth",field:"dob",ph:"MM/DD/YYYY"},
               {label:"Referring Agency",field:"agency",ph:"Name of agency that referred you"},
               {label:"Who referred you?",field:"referredBy",ph:"Case manager or staff name"},
             ].map(f=>(
               <div key={f.field} style={{marginBottom:10}}>
                 <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                <input type={f.type||"text"} value={intakeForm[f.field]} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
+                <input value={intakeForm[f.field]} onChange={e=>setIntakeForm(p=>({...p,[f.field]:e.target.value}))}
                   placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
               </div>
             ))}
