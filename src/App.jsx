@@ -1886,13 +1886,14 @@ export default function HE101App() {
       showToast("Please fill in all required fields."); return;
     }
     const cleanUsername = newParticipant.username.toLowerCase().replace(/[^a-z0-9_]/g,"_");
+    const assignedAgency = cu?.role==="agency" ? cu.agency : newParticipant.agency;
     const newUser = {
       id: cleanUsername,
       role: "renter",
       name: newParticipant.name,
       email: newParticipant.email.toLowerCase().trim(),
       password_hash: newParticipant.password,
-      agency_id: newParticipant.agency,
+      agency_id: assignedAgency,
       enroll_date: new Date().toISOString().split('T')[0],
       cert_issued: false,
       active: true
@@ -1903,7 +1904,7 @@ export default function HE101App() {
       const localUser = {
         ...newUser,
         id: cleanUsername,
-        agency: newParticipant.agency,
+        agency: assignedAgency,
         enrollDate: newUser.enroll_date,
         certIssued: false,
         modules: {},
@@ -1966,16 +1967,33 @@ export default function HE101App() {
   );
 
   if(screen==="login") return(
-    <div style={{minHeight:"100vh",background:`linear-gradient(135deg,${B.navy} 0%,#1B3A5A 50%,${B.teal} 100%)`,display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"Montserrat,sans-serif"}}>
-      <style>{FONT_STYLE}</style>
-      <style>{RESPONSIVE_STYLE}</style>
-      <div style={{display:"flex",width:"100%",maxWidth:960,borderRadius:20,overflow:"hidden",boxShadow:"0 20px 60px rgba(0,0,0,0.4)"}}>
+    <div style={{minHeight:"100vh",background:`linear-gradient(135deg,${B.navy} 0%,#1B3A5A 50%,${B.teal} 100%)`,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px",boxSizing:"border-box"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@400;600;700;800;900&display=swap');
+        * { box-sizing: border-box; }
+        .login-card { width: 100%; max-width: 420px; }
+        .login-desktop-panel { display: none; }
+        @media(min-width: 768px) {
+          .login-card { display: flex; max-width: 900px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+          .login-desktop-panel { display: flex; flex: 1; background: linear-gradient(135deg,${B.navy},${B.teal}); padding: 48px; flex-direction: column; justify-content: center; }
+          .login-form-panel { width: 400px; flex-shrink: 0; border-radius: 0; }
+        }
+        @media(max-width: 767px) {
+          .login-form-panel { border-radius: 16px; width: 100%; max-width: 420px; margin: 0 auto; }
+        }
+      `}</style>
+      <div class="login-card">
         {/* Left panel - desktop only */}
-        <div style={{flex:1,background:`linear-gradient(135deg,${B.navy},${B.teal})`,padding:"60px 48px",display:"flex",flexDirection:"column",justifyContent:"center",minWidth:0}}>
+        <div class="login-desktop-panel">
           <div style={{fontSize:28,fontWeight:900,color:B.white,fontFamily:"Playfair Display,Georgia,serif",lineHeight:1.2,marginBottom:16}}>Housing Etiquette 101</div>
-          <div style={{fontSize:14,color:"rgba(255,255,255,0.85)",lineHeight:1.7,marginBottom:32,fontFamily:"Montserrat,sans-serif"}}>Building stable communities through education, accountability, and prevention. Empowering renters and agencies across Iowa and beyond.</div>
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.85)",lineHeight:1.7,marginBottom:32,fontFamily:"Montserrat,sans-serif"}}>Empowering renters and agencies across Iowa and beyond through education, accountability, and prevention.</div>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
-            {[{icon:"📖",text:"8 comprehensive modules with video lessons"},{icon:"🎭",text:"Real-life scenarios and interactive tools"},{icon:"📊",text:"Funder-ready reporting and outcome tracking"},{icon:"🏆",text:"Certificates of completion for participants"},{icon:"💬",text:"AI-powered housing counselor available 24/7"}].map(f=>(
+            {[
+              {icon:"📖",text:"8 comprehensive modules with video lessons"},
+              {icon:"🎭",text:"Real-life scenarios and interactive quizzes"},
+              {icon:"🏆",text:"Certificate of completion upon finishing"},
+              {icon:"📊",text:"Agency dashboard with real-time progress tracking"},
+            ].map(f=>(
               <div key={f.text} style={{display:"flex",alignItems:"center",gap:12}}>
                 <span style={{fontSize:20}}>{f.icon}</span>
                 <span style={{fontSize:13,color:"rgba(255,255,255,0.85)",fontFamily:"Montserrat,sans-serif"}}>{f.text}</span>
@@ -1984,246 +2002,80 @@ export default function HE101App() {
           </div>
           <div style={{marginTop:40,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.2)"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontFamily:"Montserrat,sans-serif"}}>© 2026 ACH Management & Services LLC</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontFamily:"Montserrat,sans-serif",marginTop:2}}>Educate · Protect · Sustain</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontFamily:"Montserrat,sans-serif",marginTop:4}}>admin@housingetiquette101.org · (515) 681-3143</div>
           </div>
         </div>
-        {/* Right panel - login form */}
-        <div style={{width:420,flexShrink:0,background:B.white,padding:40,display:"flex",flexDirection:"column",justifyContent:"center"}}>
-        <div style={{textAlign:"center",marginBottom:24}}>
-          {LOGO_B64 && <img src={LOGO_B64} alt="Housing Etiquette 101" style={{width:180,height:"auto",margin:"0 auto 12px",display:"block",borderRadius:8}} />}
-          <div style={{background:B.orange,color:B.white,display:"inline-block",borderRadius:4,padding:"3px 14px",fontSize:10,fontWeight:700,letterSpacing:2,marginBottom:8}}>COMPLIANCE IS KEY</div>
-          <div style={{fontSize:13,color:B.teal,fontWeight:800,marginBottom:4,fontFamily:"Montserrat,sans-serif",lineHeight:1.4}}>Building Stability Through Education & Accountability</div>
-        </div>
-
-        {[{label:"USERNAME",val:loginId,set:setLoginId,type:"text",ph:"Enter your username"},{label:"PASSWORD",val:loginPw,set:setLoginPw,type:"password",ph:"Enter your password"}].map(f=>(
-          <div key={f.label} style={{marginBottom:14}}>
-            <label style={{fontSize:12,fontWeight:700,color:B.navy,display:"block",marginBottom:6}}>{f.label}</label>
-            <input value={f.val} onChange={e=>f.set(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} type={f.type} placeholder={f.ph}
-              style={{width:"100%",border:`2px solid ${loginErr?"#CC5500":"#E0E0E0"}`,borderRadius:8,padding:"12px 14px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+        {/* Login form */}
+        <div class="login-form-panel" style={{background:B.white,padding:32,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+          <div style={{textAlign:"center",marginBottom:24}}>
+            {LOGO_B64 && <img src={LOGO_B64} alt="Housing Etiquette 101" style={{width:140,height:"auto",marginBottom:12,borderRadius:8}}/>}
+            <div style={{background:B.orange,color:B.white,display:"inline-block",borderRadius:4,padding:"3px 14px",fontSize:10,fontWeight:800,letterSpacing:"0.1em",marginBottom:6,fontFamily:"Montserrat,sans-serif"}}>COMPLIANCE IS KEY</div>
+            <div style={{fontSize:13,color:B.teal,fontWeight:800,marginBottom:4,fontFamily:"Montserrat,sans-serif"}}>Building Stability Through Education & Accountability</div>
           </div>
-        ))}
-        {loginErr&&<div style={{color:B.red,fontSize:13,marginBottom:10,fontWeight:600,background:"#FFEBEE",padding:"8px 12px",borderRadius:6}}>⚠️ {loginErr}</div>}
-        <Btn onClick={login} color={B.orange} full style={{fontSize:16,padding:14,marginTop:4}} disabled={loginLoading}>
-          {loginLoading ? "Signing in..." : "Sign In →"}
-        </Btn>
-        {!showForgotPw && (
-          <div style={{textAlign:"center",marginTop:8}}>
-            <button onClick={()=>setShowForgotPw(true)} style={{background:"none",border:"none",fontSize:11,color:B.gray,cursor:"pointer",textDecoration:"underline"}}>
-              Forgot your password?
-            </button>
-          </div>
-        )}
-        {showForgotPw && (
-          <div style={{marginTop:12,background:B.light,borderRadius:8,padding:14}}>
-            <div style={{fontSize:13,fontWeight:700,color:B.navy,marginBottom:8}}>Reset Your Password</div>
-            <div style={{fontSize:12,color:B.gray,marginBottom:8,lineHeight:1.5}}>Enter the email address on your account. We will send you reset instructions within 24 hours.</div>
-            <input value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)} type="email" placeholder="Enter your email address"
-              style={{width:"100%",border:`1.5px solid ${B.teal}`,borderRadius:6,padding:"9px 12px",fontSize:13,marginBottom:8,boxSizing:"border-box"}}/>
-            <Btn onClick={handleForgotPassword} color={B.teal} full>Send Reset Request</Btn>
-            {forgotMsg && (
-              <div style={{fontSize:12,color:forgotMsg.includes("✅")?B.teal:B.orange,marginTop:8,lineHeight:1.5,padding:10,background:forgotMsg.includes("✅")?"#E8F7F7":"#FFF5F0",borderRadius:6,border:`1px solid ${forgotMsg.includes("✅")?B.teal:B.orange}`}}>
-                {forgotMsg}
-              </div>
-            )}
-            <button onClick={()=>{setShowForgotPw(false);setForgotMsg("");setForgotEmail("");}} style={{background:"none",border:"none",fontSize:11,color:B.gray,cursor:"pointer",textDecoration:"underline",marginTop:8,display:"block",width:"100%",textAlign:"center"}}>
-              Back to Sign In
-            </button>
-          </div>
-        )}
-
-        {showDemo&&(
-          <div style={{marginTop:16,background:B.light,borderRadius:10,padding:14}}>
-            <div style={{fontSize:12,fontWeight:700,color:B.navy,marginBottom:6}}>🔑 Demo Access — Click any row to sign in</div>
-            <div style={{fontSize:11,color:B.gray,marginBottom:10}}>For authorized previews and funder demonstrations only.</div>
-            {[
-              {label:"Super Admin (Chantell)",user:"superadmin",pw:"HE101admin!",color:B.red},
-              {label:"Admin 2 (Antwan)",user:"admin2",pw:"HE101admin2!",color:B.red},
-              {label:"ACH Case Manager",user:"ach_manager",pw:"ACH2024!",color:B.teal},
-              {label:"YSS Case Manager",user:"yss_manager",pw:"YSS2026!",color:B.teal},
-              {label:"Test Participant (Chantell)",user:"chantell_test",pw:"Test2026!",color:B.orange},
-              {label:"User A — Complete ✅",user:"renter_a",pw:"Renter123!",color:B.green},
-              {label:"User B — In Progress 🔄",user:"renter_b",pw:"Renter123!",color:B.orange},
-              {label:"User C — Not Started ⭕",user:"renter_c",pw:"Renter123!",color:B.gray},
-            ].map(c=>(
-              <div key={c.user} onClick={()=>{setLoginId(c.user);setLoginPw(c.pw);setLoginErr("");setShowDemo(false);}}
-                style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid #E8E8E8",cursor:"pointer"}}>
-                <span style={{fontSize:13,color:c.color,fontWeight:700}}>{c.label}</span>
-                <code style={{fontSize:11,color:B.gray,background:"#F0F0F0",padding:"2px 8px",borderRadius:4}}>{c.user}</code>
-              </div>
-            ))}
-          </div>
-        )}
-        <div style={{marginTop:16,background:B.light,borderRadius:10,padding:12}}>
-          <div style={{fontSize:11,fontWeight:700,color:B.navy,marginBottom:8,textAlign:"center",letterSpacing:"0.06em"}}>ENROLLMENT OPTIONS</div>
-          <div style={{display:"flex",gap:8,marginBottom:8}}>
-            <div style={{flex:1,background:B.white,border:`1.5px solid ${B.orange}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>setShowIndividualForm(true)}>
-              <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Individual</div>
-              <div style={{fontSize:18,fontWeight:900,color:B.orange}}>$75</div>
-              <div style={{fontSize:9,color:B.gray}}>per person</div>
-              <div style={{fontSize:9,color:B.navy,marginTop:3,fontWeight:600}}>Self-enrollment</div>
+          {[
+            {label:"USERNAME",val:loginId,set:setLoginId,type:"text",ph:"Enter your username"},
+            {label:"PASSWORD",val:loginPw,set:setLoginPw,type:"password",ph:"Enter your password"}
+          ].map(f=>(
+            <div key={f.label} style={{marginBottom:14}}>
+              <label style={{fontSize:12,fontWeight:700,color:B.navy,display:"block",marginBottom:6}}>{f.label}</label>
+              <input value={f.val} onChange={e=>f.set(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} type={f.type} placeholder={f.ph}
+                style={{width:"100%",border:`2px solid ${loginErr?"#CC5500":"#E0E0E0"}`,borderRadius:8,padding:"12px 16px",fontSize:14,fontFamily:"Montserrat,sans-serif",outline:"none",transition:"border-color 0.2s"}}/>
             </div>
-            <div style={{flex:1,background:B.white,border:`1.5px solid ${B.teal}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>setShowAgencyForm(true)}>
-              <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Agency</div>
-              <div style={{fontSize:18,fontWeight:900,color:B.teal}}>$100</div>
-              <div style={{fontSize:9,color:B.gray}}>per participant</div>
-              <div style={{fontSize:9,color:B.navy,marginTop:3,fontWeight:600}}>Billed to agency</div>
-            </div>
-            <div style={{flex:1,background:B.white,border:`1.5px solid #B8960C`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}}
-              onClick={()=>setShowSponsorForm(true)}>
-              <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Sponsorship</div>
-              <div style={{fontSize:18,fontWeight:900,color:"#B8960C"}}>{20 - sponsorRequests.filter(r=>r.status==="approved").length}</div>
-              <div style={{fontSize:9,color:B.gray}}>spots available</div>
-              <div style={{fontSize:9,color:B.navy,marginTop:3,fontWeight:600}}>Agency referred</div>
-            </div>
-          </div>
-          <div style={{fontSize:9,color:B.gray,textAlign:"center"}}>Questions? housingetiquette101.org</div>
-        </div>
-
-        {/* SPONSORSHIP APPLICATION POPUP */}
-        {showIndividualForm&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
-            <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>Individual Enrollment — $75</div>
-                <button onClick={()=>setShowIndividualForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>X</button>
-              </div>
-              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to complete your enrollment and process payment.</div>
-              {[
-                {label:"Full Name *",field:"name",ph:"Your full name"},
-                {label:"Email Address *",field:"email",ph:"your@email.com"},
-                {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
-                {label:"City",field:"city",ph:"Your city"},
-                {label:"State",field:"state",ph:"IA"},
-              ].map(f=>(
-                <div key={f.field} style={{marginBottom:10}}>
-                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                  <input value={individualForm[f.field]||""} onKeyDown={e=>e.stopPropagation()} onFocus={e=>e.stopPropagation()}
-                    onChange={e=>{e.stopPropagation();setIndividualForm(p=>({...p,[f.field]:e.target.value}));}}
-                    placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
-                </div>
-              ))}
-              <button onClick={()=>{
-                if(!individualForm.name||!individualForm.email||!individualForm.phone){showToast("Please fill in all required fields.");return;}
-                supabase.insert('notifications',{type:'individual_enrollment',participant_name:individualForm.name,participant_id:null,agency_id:null,message:JSON.stringify(individualForm),created_at:new Date().toISOString(),read:false}).then(()=>{
-                  showToast("Request received! We will contact you within 1 business day.");
-                  setIndividualForm({name:"",email:"",phone:"",city:"",state:"IA"});
-                  setShowIndividualForm(false);
-                }).catch(()=>showToast("Error submitting. Please email us directly."));
-              }} style={{background:B.orange,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
-                Submit Enrollment Request
+          ))}
+          {loginErr&&<div style={{color:B.red,fontSize:13,marginBottom:10,fontWeight:600,background:"#FFEBEE",padding:"8px 12px",borderRadius:6}}>{loginErr}</div>}
+          <Btn onClick={login} color={B.orange} full style={{fontSize:16,padding:14,marginTop:4}} disabled={loginLoading}>
+            {loginLoading ? "Signing in..." : "Sign In →"}
+          </Btn>
+          {!showForgotPw && (
+            <div style={{textAlign:"center",marginTop:8}}>
+              <button onClick={()=>setShowForgotPw(true)} style={{background:"none",border:"none",fontSize:11,color:B.gray,cursor:"pointer",fontFamily:"Montserrat,sans-serif"}}>
+                Forgot your password?
               </button>
             </div>
-          </div>
-        )}
-        {showAgencyForm&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
-            <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:420,maxHeight:"90vh",overflowY:"auto"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>Agency Enrollment — $100/participant</div>
-                <button onClick={()=>setShowAgencyForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:13}}>X</button>
-              </div>
-              <div style={{fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.5}}>Complete this form and we will contact you within 1 business day to set up your agency account.</div>
-              {[
-                {label:"Agency Name *",field:"agencyName",ph:"Your organization name"},
-                {label:"Contact Name *",field:"contactName",ph:"Your full name"},
-                {label:"Email Address *",field:"email",ph:"your@agency.org"},
-                {label:"Phone Number *",field:"phone",ph:"e.g. 515-555-1234"},
-                {label:"City",field:"city",ph:"Your city"},
-                {label:"Estimated Participants",field:"participants",ph:"How many participants per month?"},
-              ].map(f=>(
-                <div key={f.field} style={{marginBottom:10}}>
-                  <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
-                  <input value={agencyForm[f.field]||""} onKeyDown={e=>e.stopPropagation()} onFocus={e=>e.stopPropagation()}
-                    onChange={e=>{e.stopPropagation();setAgencyForm(p=>({...p,[f.field]:e.target.value}));}}
-                    placeholder={f.ph} style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
-                </div>
-              ))}
-              <button onClick={()=>{
-                if(!agencyForm.agencyName||!agencyForm.contactName||!agencyForm.email||!agencyForm.phone){showToast("Please fill in all required fields.");return;}
-                supabase.insert('notifications',{type:'agency_enrollment',participant_name:agencyForm.contactName,participant_id:null,agency_id:null,message:JSON.stringify(agencyForm),created_at:new Date().toISOString(),read:false}).then(()=>{
-                  showToast("Request received! We will contact you within 1 business day.");
-                  setAgencyForm({agencyName:"",contactName:"",email:"",phone:"",city:"",participants:""});
-                  setShowAgencyForm(false);
-                }).catch(()=>showToast("Error submitting. Please email us directly."));
-              }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
-                Submit Agency Request
+          )}
+          {showForgotPw && (
+            <div style={{marginTop:12,background:B.light,borderRadius:8,padding:14}}>
+              <div style={{fontSize:13,fontWeight:700,color:B.navy,marginBottom:8}}>Reset Your Password</div>
+              <div style={{fontSize:12,color:B.gray,marginBottom:8,lineHeight:1.5}}>Enter the email address on your account and we will send reset instructions.</div>
+              <input value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)} type="email" placeholder="your@email.com"
+                style={{width:"100%",border:`1.5px solid ${B.teal}`,borderRadius:6,padding:"9px 12px",fontSize:13,marginBottom:8,boxSizing:"border-box"}}/>
+              <Btn onClick={handleForgotPassword} color={B.teal} full>Send Reset Request</Btn>
+              {forgotMsg && (
+                <div style={{fontSize:12,color:forgotMsg.includes("✅")?B.teal:B.orange,marginTop:8,lineHeight:1.5}}>{forgotMsg}</div>
+              )}
+              <button onClick={()=>{setShowForgotPw(false);setForgotMsg("");setForgotEmail("");}} style={{background:"none",border:"none",fontSize:11,color:B.gray,cursor:"pointer",marginTop:8,fontFamily:"Montserrat,sans-serif"}}>
+                Back to login
               </button>
             </div>
-          </div>
-        )}
-        {showSponsorForm&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-            <div style={{background:"white",borderRadius:16,maxWidth:480,width:"100%",maxHeight:"85vh",overflow:"auto",padding:24}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                <div style={{fontSize:16,fontWeight:700,color:B.navy}}>🎯 Sponsored Enrollment Application</div>
-                <button onClick={()=>setShowSponsorForm(false)} style={{background:"#F0F0F0",border:"none",borderRadius:99,width:30,height:30,cursor:"pointer",fontSize:14}}>✕</button>
+          )}
+          <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid #F0F0F0"}}>
+            <div style={{fontSize:11,color:B.gray,textAlign:"center",marginBottom:10,fontFamily:"Montserrat,sans-serif",fontWeight:600}}>NEW TO HE101?</div>
+            <div style={{display:"flex",gap:8}}>
+              <div style={{flex:1,background:B.white,border:`1.5px solid ${B.orange}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}} onClick={()=>setShowIndividualForm(true)}>
+                <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Individual</div>
+                <div style={{fontSize:18,fontWeight:900,color:B.orange}}>$75</div>
+                <div style={{fontSize:9,color:B.gray}}>per person</div>
               </div>
-              <div style={{fontSize:11,color:B.gray,marginBottom:14,lineHeight:1.6,background:"#FFF5F0",padding:"8px 12px",borderRadius:6,borderLeft:`3px solid ${B.orange}`}}>
-                <strong>Agency referral required.</strong> You must have been referred by a registered HE101 partner agency and have a referral code from your case manager. Applications without a valid agency referral code cannot be processed.
+              <div style={{flex:1,background:B.white,border:`1.5px solid ${B.teal}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}} onClick={()=>setShowAgencyForm(true)}>
+                <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Agency</div>
+                <div style={{fontSize:18,fontWeight:900,color:B.teal}}>$100</div>
+                <div style={{fontSize:9,color:B.gray}}>per participant</div>
               </div>
-              {/* Full Name */}
-              <div style={{marginBottom:8}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Full Name *</div>
-                <input value={sponsorForm.name||""} onChange={e=>setSponsorForm(p=>({...p,name:e.target.value}))}
-                  placeholder="Your full legal name"
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"8px 10px",fontSize:12,boxSizing:"border-box"}}/>
+              <div style={{flex:1,background:B.white,border:`1.5px solid ${B.navy}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}} onClick={()=>setShowSponsorForm(true)}>
+                <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Sponsor</div>
+                <div style={{fontSize:18,fontWeight:900,color:B.navy}}>$500+</div>
+                <div style={{fontSize:9,color:B.gray}}>white-label</div>
               </div>
-              <div style={{marginBottom:8}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Email Address *</div>
-                <input value={sponsorForm.email||""} onChange={e=>setSponsorForm(p=>({...p,email:e.target.value}))}
-                  type="email" placeholder="Your email address"
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"8px 10px",fontSize:12,boxSizing:"border-box"}}/>
-              </div>
-              <div style={{marginBottom:8}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Phone Number</div>
-                <input value={sponsorForm.phone||""} onChange={e=>setSponsorForm(p=>({...p,phone:e.target.value}))}
-                  placeholder="Best number to reach you"
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"8px 10px",fontSize:12,boxSizing:"border-box"}}/>
-              </div>
-              <div style={{marginBottom:8}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Agency Referral Code *</div>
-                <input value={sponsorForm.agency||""} 
-                  onChange={e=>{setSponsorForm(p=>({...p,agency:e.target.value}));setSponsorCodeError("");}}
-                  placeholder="Given to you by your case manager e.g. ACH001"
-                  style={{width:"100%",border:`1.5px solid ${sponsorCodeError?"#CC0000":"#E0E0E0"}`,borderRadius:6,padding:"8px 10px",fontSize:12,boxSizing:"border-box"}}/>
-                {sponsorCodeError&&(
-                  <div style={{fontSize:11,color:"#CC0000",marginTop:4,padding:"8px 10px",background:"#FFF0F0",borderRadius:4,border:"1px solid #CC0000",fontWeight:600}}>
-                    ❌ {sponsorCodeError}
-                  </div>
-                )}
-              </div>
-              <div style={{marginBottom:8}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Referring Case Manager Name</div>
-                <input value={sponsorForm.referredBy||""} onChange={e=>setSponsorForm(p=>({...p,referredBy:e.target.value}))}
-                  placeholder="Name of your case manager"
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"8px 10px",fontSize:12,boxSizing:"border-box"}}/>
-              </div>
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:10,fontWeight:600,color:B.gray,marginBottom:3}}>Brief reason for applying *</div>
-                <textarea value={sponsorForm.reason||""} onChange={e=>setSponsorForm(p=>({...p,reason:e.target.value}))}
-                  placeholder="Briefly describe your housing situation and why you are applying..." rows={3}
-                  style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"8px 10px",fontSize:12,resize:"none",boxSizing:"border-box"}}/>
-              </div>
-              <div style={{fontSize:10,color:B.gray,marginBottom:12,lineHeight:1.5}}>
-                By submitting this application you confirm you have been referred by a registered HE101 agency partner. All applications are reviewed by HE101 administration. You will be contacted within 2 business days.
-              </div>
-              <button onClick={handleSponsorSubmit} style={{background:B.orange,color:"white",border:"none",borderRadius:6,padding:"11px 24px",fontSize:13,fontWeight:700,cursor:"pointer",width:"100%"}}>
-                Submit Application
-              </button>
             </div>
           </div>
-        )}
-        <div style={{textAlign:"center",marginTop:10}}>
-          <button onClick={()=>setShowDemo(p=>!p)} style={{background:"none",border:"none",fontSize:11,color:B.gray,cursor:"pointer",textDecoration:"underline"}}>
-            {showDemo?"Hide demo access":"Request demo access"}
-          </button>
+          <div style={{marginTop:12,textAlign:"center"}}>
+            <button onClick={()=>setShowContact(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>Contact Us</button>
+            <span style={{color:B.gray,fontSize:11,margin:"0 6px"}}>·</span>
+            <button onClick={()=>setShowIntakeForm(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>Participant Intake Form</button>
+          </div>
+          <div style={{textAlign:"center",marginTop:10,fontSize:10,color:B.gray}}>© 2026 ACH Management & Services LLC</div>
         </div>
-              </div>
       </div>
-    </div>
-  );
 
   // ── RENTER PORTAL ──────────────────────────────────────────────────────────
   if(screen==="renter"&&cu?.role==="renter"){
@@ -2648,7 +2500,9 @@ export default function HE101App() {
                   )}
                   <div style={{display:"flex",gap:10}}>
                     <button onClick={()=>{
-                      if(!isSuper) setNewParticipant(p=>({...p,agency:cu.agency}));
+                      if(!isSuper){
+                        newParticipant.agency = cu.agency;
+                      }
                       addParticipant();
                     }} style={{background:B.teal,color:B.white,border:"none",borderRadius:6,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer"}}>Save Participant</button>
                     <button onClick={()=>setShowAddParticipant(false)} style={{background:"#F0F0F0",color:B.gray,border:"none",borderRadius:6,padding:"10px 20px",fontSize:13,cursor:"pointer"}}>Cancel</button>
