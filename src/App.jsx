@@ -1982,9 +1982,9 @@ export default function HE101App() {
           .login-form-panel { border-radius: 16px; width: 100%; max-width: 420px; margin: 0 auto; }
         }
       `}</style>
-      <div class="login-card">
+      <div className="login-card">
         {/* Left panel - desktop only */}
-        <div class="login-desktop-panel">
+        <div className="login-desktop-panel">
           <div style={{fontSize:28,fontWeight:900,color:B.white,fontFamily:"Playfair Display,Georgia,serif",lineHeight:1.2,marginBottom:16}}>Housing Etiquette 101</div>
           <div style={{fontSize:14,color:"rgba(255,255,255,0.85)",lineHeight:1.7,marginBottom:32,fontFamily:"Montserrat,sans-serif"}}>Empowering renters and agencies across Iowa and beyond through education, accountability, and prevention.</div>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -2006,7 +2006,7 @@ export default function HE101App() {
           </div>
         </div>
         {/* Login form */}
-        <div class="login-form-panel" style={{background:B.white,padding:32,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+        <div className="login-form-panel" style={{background:B.white,padding:32,display:"flex",flexDirection:"column",justifyContent:"center"}}>
           <div style={{textAlign:"center",marginBottom:24}}>
             {LOGO_B64 && <img src={LOGO_B64} alt="Housing Etiquette 101" style={{width:140,height:"auto",marginBottom:12,borderRadius:8}}/>}
             <div style={{background:B.orange,color:B.white,display:"inline-block",borderRadius:4,padding:"3px 14px",fontSize:10,fontWeight:800,letterSpacing:"0.1em",marginBottom:6,fontFamily:"Montserrat,sans-serif"}}>COMPLIANCE IS KEY</div>
