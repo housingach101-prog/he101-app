@@ -102,28 +102,26 @@ const EMAILJS_TEMPLATE_ID = "template_0aamrwn";
 const EMAILJS_PUBLIC_KEY = "cfPfxz2I8GItw8_2a";
 const ADMIN_EMAIL = "admin@housingetiquette101.org";
 
-const sendEmail = async (to, subject, message, participantName, module, date) => {
-  try {
-    // Load EmailJS dynamically if not already loaded
-    if(!window.emailjs) {
-      await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-        script.onload = () => { window.emailjs.init(EMAILJS_PUBLIC_KEY); resolve(); };
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+const sendEmail = (to, subject, message, participantName, module, date) => {
+  const doSend = () => {
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: to,
       subject: subject,
       participant_name: participantName || 'Participant',
       module: module || 'N/A',
       message: message || '',
       date: date || new Date().toLocaleDateString(),
-    });
-    console.log('Email sent to:', to);
-  } catch(e) { console.log('Email send failed:', e.message); }
+    }).then(()=>console.log('Email sent to:', to))
+      .catch(e=>console.log('Email failed:', e));
+  };
+  if(window.emailjs) {
+    doSend();
+  } else {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    script.onload = () => { window.emailjs.init(EMAILJS_PUBLIC_KEY); doSend(); };
+    document.head.appendChild(script);
+  }
 };
 
 const sendNotification = async (type, participant, module, caseManagerEmail) => {
@@ -196,7 +194,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
           <p style="color:#888;font-size:12px;margin-top:20px">This is an automated notification from Housing Etiquette 101.</p>
         </div>
       </div>`;
-    await sendEmail(ADMIN_EMAIL, adminSubject, msg, participant.name, module ? 'Module '+module : 'All Modules', new Date().toLocaleDateString());
+    sendEmail(ADMIN_EMAIL, adminSubject, msg, participant.name, module ? 'Module '+module : 'All Modules', new Date().toLocaleDateString());
 
     // 2. Email to participant if they have an email
     if(participant.email && participant.email.includes('@')){
@@ -221,7 +219,7 @@ const sendNotification = async (type, participant, module, caseManagerEmail) => 
             <p style="color:#888;font-size:12px">Questions? Contact us at ${ADMIN_EMAIL} or call (515) 681-3143.</p>
           </div>
         </div>`;
-      await sendEmail(participant.email, partSubject, isComplete ? 'Congratulations on completing all 8 modules! Log in to download your certificate.' : 'Great job completing Module '+module+'! Keep going.', participant.name, module ? 'Module '+module : 'All Modules Complete', new Date().toLocaleDateString());
+      sendEmail(participant.email, partSubject, isComplete ? 'Congratulations on completing all 8 modules! Log in to download your certificate.' : 'Great job completing Module '+module+'! Keep going.', participant.name, module ? 'Module '+module : 'All Modules Complete', new Date().toLocaleDateString());
     }
 
   } catch(err) {
