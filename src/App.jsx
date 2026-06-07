@@ -3091,6 +3091,16 @@ export default function HE101App() {
                   </table>
                 </div>
               </Card>
+              <Card style={{marginTop:4,background:"#FFF3E0",border:"1px solid #F57C00"}}>
+                <div style={{fontWeight:700,color:B.navy,fontSize:14,marginBottom:8}}>📧 Test Email Notification</div>
+                <div style={{fontSize:12,color:B.gray,marginBottom:10}}>Click to send a test email to admin@housingetiquette101.org to verify the notification system is working.</div>
+                <button onClick={()=>{
+                  sendEmail("admin@housingetiquette101.org","HE101 Test Notification","This is a test notification from Housing Etiquette 101. The email system is working correctly.","Test User","Module 1",new Date().toLocaleDateString());
+                  showToast("Test email sent to admin@housingetiquette101.org!");
+                }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",width:"100%"}}>
+                  Send Test Email
+                </button>
+              </Card>
               <Card style={{marginTop:4}}>
                 <div style={{fontWeight:700,color:B.navy,fontSize:14,marginBottom:10}}>🔗 Google Form Quiz Links</div>
                 {MODULES.map((mod,i)=>(
