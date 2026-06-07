@@ -1975,7 +1975,7 @@ export default function HE101App() {
         .login-desktop-panel { display: none; }
         @media(min-width: 768px) {
           .login-card { display: flex; max-width: 900px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-          .login-desktop-panel { display: flex; flex: 1; background: linear-gradient(135deg,${B.navy},${B.teal}); padding: 48px; flex-direction: column; justify-content: center; }
+          .login-desktop-panel { display: flex; flex: 1; background: linear-gradient(135deg,#1B2A4A,#00A3A3); padding: 48px; flex-direction: column; justify-content: center; }
           .login-form-panel { width: 400px; flex-shrink: 0; border-radius: 0; }
         }
         @media(max-width: 767px) {
@@ -2076,6 +2076,8 @@ export default function HE101App() {
           <div style={{textAlign:"center",marginTop:10,fontSize:10,color:B.gray}}>© 2026 ACH Management & Services LLC</div>
         </div>
       </div>
+    </div>
+  );
 
   // ── RENTER PORTAL ──────────────────────────────────────────────────────────
   if(screen==="renter"&&cu?.role==="renter"){
