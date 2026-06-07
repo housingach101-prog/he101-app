@@ -2064,7 +2064,7 @@ export default function HE101App() {
               <div style={{flex:1,background:B.white,border:`1.5px solid ${B.navy}`,borderRadius:8,padding:"8px 6px",textAlign:"center",cursor:"pointer"}} onClick={()=>setShowSponsorForm(true)}>
                 <div style={{fontSize:10,color:B.gray,marginBottom:1}}>Sponsor</div>
                 <div style={{fontSize:18,fontWeight:900,color:B.navy}}>$500+</div>
-                <div style={{fontSize:9,color:B.gray}}>white-label</div>
+                <div style={{fontSize:9,color:B.gray}}>per month</div>
               </div>
             </div>
           </div>
@@ -2072,6 +2072,22 @@ export default function HE101App() {
             <button onClick={()=>setShowContact(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>Contact Us</button>
             <span style={{color:B.gray,fontSize:11,margin:"0 6px"}}>·</span>
             <button onClick={()=>setShowIntakeForm(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>Participant Intake Form</button>
+          </div>
+          <div style={{marginTop:14,background:"#F8F9FA",borderRadius:8,padding:"10px 14px"}}>
+            <div style={{fontSize:10,fontWeight:700,color:B.gray,textAlign:"center",marginBottom:8,letterSpacing:"0.08em"}}>DEMO ACCESS</div>
+            <div style={{display:"flex",flexDirection:"column",gap:4}}>
+              {[
+                {label:"Super Admin",user:"superadmin",pw:"HE101admin!",color:B.orange},
+                {label:"ACH Manager",user:"ach_manager",pw:"ACH2026!",color:B.teal},
+                {label:"YSS Manager",user:"yss_manager",pw:"YSS2026!",color:B.navy},
+                {label:"Test Renter",user:"chantell_test",pw:"Test2026!",color:B.gray},
+              ].map(d=>(
+                <button key={d.user} onClick={()=>{setLoginId(d.user);setLoginPw(d.pw);}}
+                  style={{background:"white",border:`1px solid ${d.color}44`,borderRadius:6,padding:"5px 10px",fontSize:10,cursor:"pointer",textAlign:"left",fontFamily:"Montserrat,sans-serif",color:B.navy}}>
+                  <span style={{fontWeight:700,color:d.color}}>{d.label}:</span> {d.user} / {d.pw}
+                </button>
+              ))}
+            </div>
           </div>
           <div style={{textAlign:"center",marginTop:10,fontSize:10,color:B.gray}}>© 2026 ACH Management & Services LLC</div>
         </div>
