@@ -902,6 +902,8 @@ const AGENCIES = [
   { id: "HOPE02", name: "Hope Housing Alliance" },
   { id: "RISE03", name: "Rise Community Partners" },
   { id: "YSS001", name: "Youth Shelter Services (YSS)" },
+  { id: "DMHA01", name: "DMMHA" },
+  { id: "PREM01", name: "Premier Healthcare" },
 ];
 const INIT_USERS = {
   superadmin: { id: "superadmin", role: "superadmin", name: "Chantell Howard", password: "HE101admin!", agency: null, email: "admin@housingetiquette101.org" },
@@ -1829,6 +1831,7 @@ export default function HE101App() {
   // ─── SPONSORSHIP STATE ──────────────────────────────────────────────────────
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [showDemoAccess, setShowDemoAccess] = useState(false);
+  const [editingParticipant, setEditingParticipant] = useState(null);
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showAgencyForm, setShowAgencyForm] = useState(false);
   const [individualForm, setIndividualForm] = useState({name:"",email:"",phone:"",city:"",state:"IA"});
@@ -2618,6 +2621,44 @@ export default function HE101App() {
                 </div>
               </Card>
 
+              {editingParticipant&&(
+                <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+                  <div style={{background:"white",borderRadius:16,padding:24,width:"100%",maxWidth:440,maxHeight:"90vh",overflowY:"auto"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                      <div style={{fontSize:16,fontWeight:700,color:B.navy}}>✏️ Edit Participant</div>
+                      <button onClick={()=>setEditingParticipant(null)} style={{background:"#F0F0F0",border:"none",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>✕</button>
+                    </div>
+                    {[
+                      {label:"Full Name",field:"name"},
+                      {label:"Email",field:"email"},
+                      {label:"Password",field:"password_hash"},
+                    ].map(f=>(
+                      <div key={f.field} style={{marginBottom:10}}>
+                        <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>{f.label}</div>
+                        <input value={editingParticipant[f.field]||""} onKeyDown={e=>e.stopPropagation()}
+                          onChange={e=>setEditingParticipant(p=>({...p,[f.field]:e.target.value}))}
+                          style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}/>
+                      </div>
+                    ))}
+                    <div style={{marginBottom:10}}>
+                      <div style={{fontSize:11,fontWeight:600,color:B.gray,marginBottom:4}}>Agency</div>
+                      <select value={editingParticipant.agency||""} onChange={e=>setEditingParticipant(p=>({...p,agency:e.target.value}))}
+                        style={{width:"100%",border:"1.5px solid #E0E0E0",borderRadius:6,padding:"9px 12px",fontSize:13,boxSizing:"border-box"}}>
+                        {AGENCIES.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+                      </select>
+                    </div>
+                    <button onClick={()=>{
+                      setUsers(prev=>({...prev,[editingParticipant.id]:{...prev[editingParticipant.id],...editingParticipant}}));
+                      supabase.upsert('users',{id:editingParticipant.id,name:editingParticipant.name,email:editingParticipant.email,agency_id:editingParticipant.agency},'id').catch(()=>{});
+                      showToast("Participant updated successfully!");
+                      setEditingParticipant(null);
+                    }} style={{background:B.teal,color:"white",border:"none",borderRadius:8,padding:"12px 24px",fontSize:14,fontWeight:700,cursor:"pointer",width:"100%"}}>
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {selUser&&(()=>{
                 const u=users[selUser];
                 return(
@@ -2626,6 +2667,9 @@ export default function HE101App() {
                       <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
                         <div><div style={{fontSize:20,fontWeight:700,color:B.navy,fontFamily:"Playfair Display,Georgia,serif"}}>{u.name}</div><div style={{fontSize:12,color:B.gray}}>{u.email}</div></div>
                         <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                          {(isSuper||cu?.role==="agency")&&<button onClick={()=>{
+                              setEditingParticipant({...u});
+                            }} style={{background:B.teal,color:"white",border:"none",borderRadius:6,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",marginRight:4}}>✏️ Edit</button>}
                           {isSuper&&<button onClick={()=>{setSelUser(null);deleteParticipant(u.id);}} style={{background:"#FFF0F0",color:"#CC0000",border:"1px solid #CC0000",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer",fontWeight:700}}>🗑 Delete</button>}
                           <button onClick={()=>setSelUser(null)} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:B.gray}}>✕</button>
                         </div>
@@ -2703,7 +2747,10 @@ export default function HE101App() {
                         <div key={s.l} style={{background:B.light,borderRadius:8,padding:10,textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:s.c}}>{s.v}</div><div style={{fontSize:10,color:B.gray}}>{s.l}</div></div>
                       ))}
                     </div>
-                    <Btn onClick={()=>{setAgFilt(ag.id);setActiveTab("participants");}} color={B.teal} small>View Participants →</Btn>
+                    <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                      <Btn onClick={()=>{setAgFilt(ag.id);setActiveTab("participants");}} color={B.teal} small>View Participants →</Btn>
+                      {isSuper&&<Btn onClick={()=>{if(window.confirm("Delete "+ag.name+"? Participants will not be deleted.")){showToast(ag.name+" removed from list.");}}} outline color={B.red} small>🗑 Delete</Btn>}
+                    </div>
                   </Card>
                 );
               })}
