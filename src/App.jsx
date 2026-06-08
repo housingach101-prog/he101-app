@@ -1889,6 +1889,8 @@ export default function HE101App() {
     if (!newParticipant.name || !newParticipant.email || !newParticipant.username || !newParticipant.password) {
       showToast("Please fill in all required fields."); return;
     }
+    if(window._addingParticipant) return;
+    window._addingParticipant = true;
     const cleanUsername = newParticipant.username.toLowerCase().replace(/[^a-z0-9_]/g,"_");
     const assignedAgency = cu?.role==="agency" ? cu.agency : newParticipant.agency;
     const newUser = {
