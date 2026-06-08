@@ -2764,8 +2764,9 @@ export default function HE101App() {
                     <div style={{display:"flex",gap:8,alignItems:"center"}}>
                       <Btn onClick={()=>{setAgFilt(ag.id);setActiveTab("participants");}} color={B.teal} small>View Participants →</Btn>
                       {isSuper&&<Btn onClick={()=>{if(window.confirm("Delete "+ag.name+"? Participants will not be deleted.")){
-                        supabase.delete&&supabase.delete('agencies',ag.id).catch(()=>{});
-                        showToast(ag.name+" removed.");
+                        supabase.delete('agencies', ag.id).catch(()=>{});
+                        setLiveAgencies(prev=>prev.filter(a=>a.id!==ag.id));
+                        showToast(ag.name+" deleted successfully!");
                       }}} outline color={B.red} small>🗑 Delete</Btn>}
                     </div>
                   </Card>
