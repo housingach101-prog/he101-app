@@ -1893,36 +1893,42 @@ export default function HE101App() {
     window._addingParticipant = true;
     const cleanUsername = newParticipant.username.toLowerCase().replace(/[^a-z0-9_]/g,"_");
     const assignedAgency = cu?.role==="agency" ? cu.agency : newParticipant.agency;
-    const newUser = {
-      id: cleanUsername,
-      role: "renter",
-      name: newParticipant.name,
-      email: newParticipant.email.toLowerCase().trim(),
-      password_hash: newParticipant.password,
-      agency_id: assignedAgency,
-      enroll_date: new Date().toISOString().split('T')[0],
-      cert_issued: false,
-      active: true
-    };
     try {
-      await supabase.insert('users', newUser);
-      // Add to local state immediately
-      const localUser = {
-        ...newUser,
+      await supabase.insert('users', {
         id: cleanUsername,
+        role: "renter",
+        name: newParticipant.name,
+        email: newParticipant.email.toLowerCase().trim(),
+        password_hash: newParticipant.password
+      });
+      const localUser = {
+        id: cleanUsername,
+        role: "renter",
+        name: newParticipant.name,
+        email: newParticipant.email.toLowerCase().trim(),
+        password_hash: newParticipant.password,
         agency: assignedAgency,
-        enrollDate: newUser.enroll_date,
+        enrollDate: new Date().toISOString().split('T')[0],
         certIssued: false,
         modules: {},
-        outcomes: {}
+        outcomes: {stillHoused:true,violations:0,payment:"unknown",checkin:null},
+        requiresMoveInClearance: false,
+        deadlineExtended: false,
+        caseNote: ""
       };
       setUsers(prev => ({...prev, [cleanUsername]: localUser}));
       showToast("✅ " + newParticipant.name + " added successfully!");
-      setNewParticipant({ name: "", email: "", username: "", password: "", agency: "ACH001" });
+      setNewParticipant({ name: "", email: "", username: "", password: "", agency: cu?.role==="agency"?cu.agency:"ACH001" });
       setShowAddParticipant(false);
-      setTimeout(async () => { await loadAllData(); }, 1500);
+      window._addingParticipant = false;
     } catch(err) {
-      showToast("Error adding participant. Please try again.");
+      window._addingParticipant = false;
+      console.error('Add participant error:', err);
+      if(JSON.stringify(err).includes('23505')||JSON.stringify(err).includes('duplicate')) {
+        showToast("❌ Username or email already exists. Use different values.");
+      } else {
+        showToast("Error adding participant. Please try again.");
+      }
     }
   };
 
