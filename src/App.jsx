@@ -1916,7 +1916,7 @@ export default function HE101App() {
         deadlineExtended: false,
         caseNote: ""
       };
-      setUsers(prev => ({...prev, [cleanUsername]: localUser}));
+      setDbUsers(prev => ({...prev, [cleanUsername]: localUser}));
       showToast("✅ " + newParticipant.name + " added successfully!");
       setNewParticipant({ name: "", email: "", username: "", password: "", agency: cu?.role==="agency"?cu.agency:"ACH001" });
       setShowAddParticipant(false);
@@ -1943,7 +1943,7 @@ export default function HE101App() {
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       // Remove from local state
-      setUsers(prev => {
+      setDbUsers(prev => {
         const next = {...prev};
         delete next[userId];
         return next;
@@ -1951,7 +1951,7 @@ export default function HE101App() {
       showToast("✅ Participant deleted successfully.");
     } catch(err) {
       // Remove from local state only if Supabase fails
-      setUsers(prev => {
+      setDbUsers(prev => {
         const next = {...prev};
         delete next[userId];
         return next;
@@ -2656,7 +2656,7 @@ export default function HE101App() {
                       </select>
                     </div>
                     <button onClick={()=>{
-                      setUsers(prev=>({...prev,[editingParticipant.id]:{...prev[editingParticipant.id],...editingParticipant}}));
+                      setDbUsers(prev=>({...prev,[editingParticipant.id]:{...prev[editingParticipant.id],...editingParticipant}}));
                       supabase.upsert('users',{id:editingParticipant.id,name:editingParticipant.name,email:editingParticipant.email,agency_id:editingParticipant.agency},'id').catch(()=>{});
                       showToast("Participant updated successfully!");
                       setEditingParticipant(null);
@@ -2709,7 +2709,7 @@ export default function HE101App() {
                             <div style={{fontSize:11,color:B.gray}}>Must complete all 8 modules before housing placement</div>
                           </div>
                           <div style={{background:u.requiresMoveInClearance?B.teal:"#E0E0E0",borderRadius:99,padding:"4px 14px",fontSize:12,fontWeight:700,color:u.requiresMoveInClearance?B.white:B.gray,cursor:"pointer"}}
-                            onClick={()=>setUsers(prev=>({...prev,[u.id]:{...prev[u.id],requiresMoveInClearance:!prev[u.id].requiresMoveInClearance}}))}>
+                            onClick={()=>setDbUsers(prev=>({...prev,[u.id]:{...prev[u.id],requiresMoveInClearance:!prev[u.id].requiresMoveInClearance}}))}>
                             {u.requiresMoveInClearance?"ON":"OFF"}
                           </div>
                         </div>
