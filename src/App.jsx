@@ -1891,23 +1891,25 @@ export default function HE101App() {
     }
     const cleanUsername = newParticipant.username.toLowerCase().replace(/[^a-z0-9_]/g,"_");
     const assignedAgency = cu?.role==="agency" ? cu.agency : newParticipant.agency;
+    const newUser = {
+      id: cleanUsername,
+      role: "renter",
+      name: newParticipant.name,
+      email: newParticipant.email.toLowerCase().trim(),
+      password_hash: newParticipant.password,
+      agency_id: assignedAgency,
+      enroll_date: new Date().toISOString().split('T')[0],
+      cert_issued: false,
+      active: true
+    };
     try {
-      // Insert ONLY the columns that exist in Supabase users table
-      await supabase.insert('users', {
-        id: cleanUsername,
-        role: "renter",
-        name: newParticipant.name,
-        email: newParticipant.email.toLowerCase().trim(),
-        password_hash: newParticipant.password
-      });
+      await supabase.insert('users', newUser);
+      // Add to local state immediately
       const localUser = {
+        ...newUser,
         id: cleanUsername,
-        role: "renter",
-        name: newParticipant.name,
-        email: newParticipant.email.toLowerCase().trim(),
-        password_hash: newParticipant.password,
         agency: assignedAgency,
-        enrollDate: new Date().toISOString().split('T')[0],
+        enrollDate: newUser.enroll_date,
         certIssued: false,
         modules: {},
         outcomes: {}
