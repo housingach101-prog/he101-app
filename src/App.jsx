@@ -1001,7 +1001,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const e=mods.reduce((a,m)=>a+(m.score||0),0);const p=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((e/p)*100)+"%":"Pending";})()}
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const e=mods.reduce((a,m)=>a+(m.score||0),0);const p=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((e/p)*100)+"%":"Pending";})()}</div>
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
