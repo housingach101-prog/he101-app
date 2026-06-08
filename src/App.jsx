@@ -1903,36 +1903,22 @@ export default function HE101App() {
       active: true
     };
     try {
-      // Add to local state immediately (works without Supabase)
+      await supabase.insert('users', newUser);
+      // Add to local state immediately
       const localUser = {
+        ...newUser,
         id: cleanUsername,
-        role: "renter",
-        name: newParticipant.name,
-        email: newParticipant.email.toLowerCase().trim(),
-        password_hash: newParticipant.password,
         agency: assignedAgency,
         enrollDate: newUser.enroll_date,
         certIssued: false,
         modules: {},
-        outcomes: {stillHoused: true, violations: 0, payment: "unknown", checkin: null},
-        requiresMoveInClearance: false,
-        deadlineExtended: false,
-        caseNote: ""
+        outcomes: {}
       };
       setUsers(prev => ({...prev, [cleanUsername]: localUser}));
-      // Also try to save to Supabase notifications as backup record
-      supabase.insert('notifications', {
-        type: 'new_participant',
-        participant_name: newParticipant.name,
-        participant_id: cleanUsername,
-        agency_id: assignedAgency,
-        message: JSON.stringify({...newUser, password: newParticipant.password}),
-        created_at: new Date().toISOString(),
-        read: false
-      }).catch(()=>{});
       showToast("✅ " + newParticipant.name + " added successfully!");
-      setNewParticipant({ name: "", email: "", username: "", password: "", agency: cu?.role==="agency"?cu.agency:"ACH001" });
+      setNewParticipant({ name: "", email: "", username: "", password: "", agency: "ACH001" });
       setShowAddParticipant(false);
+      setTimeout(async () => { await loadAllData(); }, 1500);
     } catch(err) {
       showToast("Error adding participant. Please try again.");
     }
@@ -2763,11 +2749,7 @@ export default function HE101App() {
                     </div>
                     <div style={{display:"flex",gap:8,alignItems:"center"}}>
                       <Btn onClick={()=>{setAgFilt(ag.id);setActiveTab("participants");}} color={B.teal} small>View Participants →</Btn>
-                      {isSuper&&<Btn onClick={()=>{if(window.confirm("Delete "+ag.name+" from the system? The agency will be permanently removed. Their participants will remain but will no longer be linked to this agency.")){
-                        supabase.delete('agencies', ag.id).catch(()=>{});
-                        setLiveAgencies(prev=>prev.filter(a=>a.id!==ag.id));
-                        showToast(ag.name+" deleted successfully!");
-                      }}} outline color={B.red} small>🗑 Delete</Btn>}
+                      {isSuper&&<Btn onClick={()=>{if(window.confirm("Delete "+ag.name+"? Participants will not be deleted.")){showToast(ag.name+" removed from list.");}}} outline color={B.red} small>🗑 Delete</Btn>}
                     </div>
                   </Card>
                 );
