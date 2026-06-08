@@ -2001,10 +2001,7 @@ export default function HE101App() {
               </div>
             ))}
           </div>
-          <div style={{marginTop:40,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.2)"}}>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontFamily:"Montserrat,sans-serif"}}>© 2026 ACH Management & Services LLC</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontFamily:"Montserrat,sans-serif",marginTop:4}}>admin@housingetiquette101.org · (515) 681-3143</div>
-          </div>
+
         </div>
         {/* Login form */}
         <div className="login-form-panel" style={{background:B.white,padding:"28px 24px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
@@ -2060,23 +2057,9 @@ export default function HE101App() {
             </div>
           </div>
 
-          {/* Contact + Intake links */}
-          <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:16,marginTop:12}}>
-            <button onClick={()=>setShowContact(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontWeight:700,fontFamily:"Montserrat,sans-serif",textDecoration:"underline"}}>
-              Contact Us
-            </button>
-            <span style={{color:"#DDD"}}>|</span>
-            <button onClick={()=>setShowIntakeForm(true)} style={{background:"none",border:"none",fontSize:11,color:B.teal,cursor:"pointer",fontWeight:700,fontFamily:"Montserrat,sans-serif",textDecoration:"underline"}}>
-              Participant Intake
-            </button>
-          </div>
 
-          {/* Phone + email */}
-          <div style={{textAlign:"center",marginTop:8,fontSize:11,color:B.gray,fontFamily:"Montserrat,sans-serif"}}>
-            <a href="tel:+15156813143" style={{color:B.gray,textDecoration:"none",fontWeight:600}}>(515) 681-3143</a>
-            <span style={{margin:"0 6px"}}>·</span>
-            <a href="mailto:admin@housingetiquette101.org" style={{color:B.gray,textDecoration:"none",fontWeight:600}}>admin@housingetiquette101.org</a>
-          </div>
+
+
 
           {/* Request Demo */}
           <div style={{textAlign:"center",marginTop:12}}>
