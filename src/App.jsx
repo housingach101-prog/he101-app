@@ -514,7 +514,7 @@ const QUIZ_QUESTIONS = {
   ],
   3: [
     { q: "What is contract rent?", options: ["The amount your subsidy pays", "The full monthly rent listed in your lease", "The amount you negotiate with management", "Only the portion you owe after assistance"], correct: 1 },
-    { q: "Which system does the housing authority use to verify your income?", options: ["Your personal bank statements only", "Tax records from 3 years ago", "EIV — Enterprise Income Verification", "A verbal confirmation from your employer"], correct: 2 },
+    { q: "If your income changes, when should you report it to your housing program?", options: ["Only at your annual recertification", "Whenever you feel like it", "Within the time period stated in your program (usually 10-30 days)", "Only if it goes up by more than $500"], correct: 2 },
     { q: "When must you report income changes to your housing program?", options: ["Only at annual recertification", "Within 10–30 days depending on your program", "Whenever you feel like it", "Only if the change is more than $500/month"], correct: 1 },
     { q: "What happens when you fail to report income?", options: ["Nothing, as long as you pay rent", "You may owe back payments and face program termination", "Your subsidy automatically adjusts", "Management handles it for you"], correct: 1 },
     { q: "Cash income from gig work or self-employment:", options: ["Does not need to be reported", "Only needs to be reported if over $1,000/month", "Must be reported — all income is reportable", "Is exempt from reporting for 6 months"], correct: 2 },
@@ -574,13 +574,13 @@ const QUIZ_QUESTIONS = {
   ],
   8: [
     { q: "What should you do FIRST when you receive an eviction notice?", options: ["Move out immediately", "Ignore it and continue paying rent", "Read it carefully to identify the notice type and deadline", "Call the police"], correct: 2 },
-    { q: "A 'pay or quit' notice means:", options: ["You must move out immediately", "Pay the overdue rent within the stated period or vacate", "You are being evicted with no recourse", "Management is offering you a payment plan"], correct: 1 },
+    { q: "If you get a notice that says 'pay or quit', what should you do first?", options: ["Ignore it and wait", "Move out right away", "Read it carefully, find out how much you owe, and pay it or get help within the deadline", "Call the police"], correct: 2 },
     { q: "What resource provides free legal help to renters facing eviction in Iowa?", options: ["The landlord's attorney", "Iowa Legal Aid — 1-800-532-1275", "The Department of Motor Vehicles", "The Better Business Bureau"], correct: 1 },
     { q: "If you receive an eviction court summons, you should:", options: ["Ignore it — missing court is fine if you've paid", "Show up to every court date — missing it guarantees a judgment against you", "Have a neighbor represent you", "Only appear if you think you'll win"], correct: 1 },
     { q: "Emergency rental assistance can be accessed through:", options: ["Your landlord's office", "The federal courts", "211 Iowa or your local Continuum of Care", "Only through a private attorney"], correct: 2 },
     { q: "An 'unconditional quit' notice means:", options: ["You have time to fix the problem before eviction", "You must vacate with no option to cure — typically for serious violations", "Management is willing to negotiate", "You can request a 30-day extension"], correct: 1 },
     { q: "A 'cure or quit' notice means:", options: ["Move out immediately with no options", "You must fix the stated lease violation within the given period or vacate", "Pay back rent or leave", "The landlord is canceling your lease with no reason given"], correct: 1 },
-    { q: "A writ of possession is:", options: ["A document proving you own your belongings", "A court order authorizing the landlord to take back the property after eviction judgment", "A permission slip to have guests stay overnight", "A notice that your rent will increase"], correct: 1 },
+    { q: "If you miss your eviction court date, what usually happens?", options: ["The judge waits for you to reschedule", "Nothing happens if you pay your rent", "The landlord automatically wins and you could be removed", "You get 30 more days automatically"], correct: 2 },
     { q: "If you cannot pay rent and want to avoid eviction, you should:", options: ["Wait and hope management doesn't notice", "Contact management BEFORE the due date and apply for emergency rental assistance immediately", "Ignore notices until you have the money", "Ask a neighbor to cover it without telling management"], correct: 1 },
     { q: "Which type of eviction notice gives you NO opportunity to fix the problem?", options: ["Pay or Quit", "Cure or Quit", "Unconditional Quit", "30-Day Notice"], correct: 2 },
   ],
@@ -1001,7 +1001,7 @@ const Certificate = ({user,onClose})=>(
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"1px solid #E0E0E0",paddingTop:12,marginTop:8,flexWrap:"wrap",gap:8}}>
           <div style={{background:B.gold,padding:"5px 16px",borderRadius:4,fontSize:11,fontWeight:700,fontFamily:"Montserrat,sans-serif",color:B.navy}}>Cert ID: {user.certId}</div>
-          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const e=mods.reduce((a,m)=>a+(m.score||0),0);const p=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((e/p)*100)+"%":"Pending";})()}</div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null);const earned=mods.reduce((a,m)=>a+(m.score||0),0);const possible=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((earned/possible)*100)+"%":"N/A";})()}</div>
+          <div style={{fontFamily:"Montserrat,sans-serif",fontSize:11,color:"#555"}}>Date Issued: <strong>{user.certDate}</strong></div><div style={{fontFamily:"Montserrat,sans-serif",fontSize:12,color:B.teal,fontWeight:700,marginTop:4}}>Overall Score: {(()=>{const mods=Object.values(user.modules||{}).filter(m=>m.score!=null&&m.status==="complete");const e=mods.reduce((a,m)=>a+(m.score||0),0);const p=mods.reduce((a,m)=>a+(m.total||10),0);return mods.length>0?Math.round((e/p)*100)+"%":"Pending";})()}
         </div>
         <div style={{display:"flex",justifyContent:"space-around",marginTop:14,paddingTop:12,borderTop:"1px solid #E0E0E0"}}>
           {[
@@ -2071,7 +2071,7 @@ export default function HE101App() {
               <div style={{marginTop:8,background:"#F8F9FA",borderRadius:8,padding:"10px 12px",textAlign:"left"}}>
                 {[
                   {label:"Super Admin",user:"superadmin",pw:"HE101admin!",color:B.orange},
-                  {label:"ACH Manager",user:"ach_manager",pw:"ACH2026!",color:B.teal},
+                  {label:"ACH Manager",user:"ach_manager",pw:"ACH2024!",color:B.teal},
                   {label:"YSS Manager",user:"yss_manager",pw:"YSS2026!",color:B.navy},
                   {label:"Renter A",user:"renter_a",pw:"Renter123!",color:B.gray},
                   {label:"Renter B",user:"renter_b",pw:"Renter123!",color:B.gray},
