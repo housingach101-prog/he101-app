@@ -1831,6 +1831,7 @@ export default function HE101App() {
   // ─── SPONSORSHIP STATE ──────────────────────────────────────────────────────
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [showDemoAccess, setShowDemoAccess] = useState(false);
+  const [showEnrollOptions, setShowEnrollOptions] = useState(false);
   const [editingParticipant, setEditingParticipant] = useState(null);
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showAgencyForm, setShowAgencyForm] = useState(false);
@@ -1889,46 +1890,38 @@ export default function HE101App() {
     if (!newParticipant.name || !newParticipant.email || !newParticipant.username || !newParticipant.password) {
       showToast("Please fill in all required fields."); return;
     }
-    if(window._addingParticipant) return;
-    window._addingParticipant = true;
     const cleanUsername = newParticipant.username.toLowerCase().replace(/[^a-z0-9_]/g,"_");
     const assignedAgency = cu?.role==="agency" ? cu.agency : newParticipant.agency;
+    const newUser = {
+      id: cleanUsername,
+      role: "renter",
+      name: newParticipant.name,
+      email: newParticipant.email.toLowerCase().trim(),
+      password_hash: newParticipant.password,
+      agency_id: assignedAgency,
+      enroll_date: new Date().toISOString().split('T')[0],
+      cert_issued: false,
+      active: true
+    };
     try {
-      await supabase.insert('users', {
-        id: cleanUsername,
-        role: "renter",
-        name: newParticipant.name,
-        email: newParticipant.email.toLowerCase().trim(),
-        password_hash: newParticipant.password
-      });
+      await supabase.insert('users', newUser);
+      // Add to local state immediately
       const localUser = {
+        ...newUser,
         id: cleanUsername,
-        role: "renter",
-        name: newParticipant.name,
-        email: newParticipant.email.toLowerCase().trim(),
-        password_hash: newParticipant.password,
         agency: assignedAgency,
-        enrollDate: new Date().toISOString().split('T')[0],
+        enrollDate: newUser.enroll_date,
         certIssued: false,
         modules: {},
-        outcomes: {stillHoused:true,violations:0,payment:"unknown",checkin:null},
-        requiresMoveInClearance: false,
-        deadlineExtended: false,
-        caseNote: ""
+        outcomes: {}
       };
-      setDbUsers(prev => ({...prev, [cleanUsername]: localUser}));
+      setUsers(prev => ({...prev, [cleanUsername]: localUser}));
       showToast("✅ " + newParticipant.name + " added successfully!");
-      setNewParticipant({ name: "", email: "", username: "", password: "", agency: cu?.role==="agency"?cu.agency:"ACH001" });
+      setNewParticipant({ name: "", email: "", username: "", password: "", agency: "ACH001" });
       setShowAddParticipant(false);
-      window._addingParticipant = false;
+      setTimeout(async () => { await loadAllData(); }, 1500);
     } catch(err) {
-      window._addingParticipant = false;
-      console.error('Add participant error:', err);
-      if(JSON.stringify(err).includes('23505')||JSON.stringify(err).includes('duplicate')) {
-        showToast("❌ Username or email already exists. Use different values.");
-      } else {
-        showToast("Error adding participant. Please try again.");
-      }
+      showToast("Error adding participant. Please try again.");
     }
   };
 
@@ -1943,7 +1936,7 @@ export default function HE101App() {
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       // Remove from local state
-      setDbUsers(prev => {
+      setUsers(prev => {
         const next = {...prev};
         delete next[userId];
         return next;
@@ -1951,7 +1944,7 @@ export default function HE101App() {
       showToast("✅ Participant deleted successfully.");
     } catch(err) {
       // Remove from local state only if Supabase fails
-      setDbUsers(prev => {
+      setUsers(prev => {
         const next = {...prev};
         delete next[userId];
         return next;
@@ -2050,34 +2043,40 @@ export default function HE101App() {
             </div>
           )}
 
-          {/* Enrollment tabs */}
-          <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #F0F0F0"}}>
-            <div style={{fontSize:10,fontWeight:800,color:B.gray,textAlign:"center",marginBottom:10,letterSpacing:"0.08em"}}>NEW TO HE101?</div>
-            <div style={{display:"flex",gap:8}}>
-              {[
-                {label:"Individual",price:"$75",sub:"per person",color:B.orange,action:()=>setShowIndividualForm(true)},
-                {label:"Agency",price:"$100",sub:"per participant",color:B.teal,action:()=>setShowAgencyForm(true)},
-                {label:"Sponsorship",price:"20",sub:"spots available",color:B.navy,action:()=>setShowSponsorForm(true)},
-              ].map(t=>(
-                <div key={t.label} onClick={t.action} style={{flex:1,background:B.white,border:`2px solid ${t.color}55`,borderRadius:8,padding:"10px 4px",textAlign:"center",cursor:"pointer"}}>
-                  <div style={{fontSize:10,fontWeight:800,color:t.color,marginBottom:2,fontFamily:"Montserrat,sans-serif"}}>{t.label}</div>
-                  <div style={{fontSize:17,fontWeight:900,color:t.color}}>{t.price}</div>
-                  <div style={{fontSize:9,color:B.gray}}>{t.sub}</div>
-                </div>
-              ))}
-            </div>
+          {/* Request Demo - PRIMARY CTA */}
+          <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #F0F0F0",textAlign:"center"}}>
+            <button onClick={()=>setShowDemoAccess(p=>!p)}
+              style={{background:B.orange,border:"none",borderRadius:8,fontSize:13,color:"white",cursor:"pointer",padding:"10px 24px",fontFamily:"Montserrat,sans-serif",fontWeight:800,width:"100%",letterSpacing:"0.04em"}}>
+              {showDemoAccess?"Hide Demo Access":"🔐 Request Demo Access"}
+            </button>
           </div>
 
 
-
-
-
-          {/* Request Demo */}
-          <div style={{textAlign:"center",marginTop:12}}>
-            <button onClick={()=>setShowDemoAccess(p=>!p)}
-              style={{background:B.orange,border:"none",borderRadius:8,fontSize:12,color:"white",cursor:"pointer",padding:"8px 20px",fontFamily:"Montserrat,sans-serif",fontWeight:800,letterSpacing:"0.04em"}}>
-              {showDemoAccess?"Hide Demo Access":"Request Demo Access"}
+          {/* Enroll Now - collapsed by default */}
+          <div style={{textAlign:"center",marginTop:10}}>
+            <button onClick={()=>setShowEnrollOptions(p=>!p)}
+              style={{background:"none",border:"1px solid #E0E0E0",borderRadius:6,fontSize:11,color:B.gray,cursor:"pointer",padding:"5px 16px",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>
+              {showEnrollOptions?"▲ Hide Enrollment Options":"▼ Enroll Now"}
             </button>
+            {showEnrollOptions&&(
+              <div style={{marginTop:10}}>
+                <div style={{fontSize:10,fontWeight:800,color:B.gray,textAlign:"center",marginBottom:8,letterSpacing:"0.08em"}}>SELECT ENROLLMENT TYPE</div>
+                <div style={{display:"flex",gap:8}}>
+                  {[
+                    {label:"Individual",price:"$75",sub:"per person",color:B.orange,action:()=>setShowIndividualForm(true)},
+                    {label:"Agency",price:"$100",sub:"per participant",color:B.teal,action:()=>setShowAgencyForm(true)},
+                    {label:"Sponsorship",price:"20",sub:"spots available",color:B.navy,action:()=>setShowSponsorForm(true)},
+                  ].map(t=>(
+                    <div key={t.label} onClick={t.action} style={{flex:1,background:B.white,border:`2px solid ${t.color}55`,borderRadius:8,padding:"10px 4px",textAlign:"center",cursor:"pointer"}}>
+                      <div style={{fontSize:10,fontWeight:800,color:t.color,marginBottom:2}}>{t.label}</div>
+                      <div style={{fontSize:17,fontWeight:900,color:t.color}}>{t.price}</div>
+                      <div style={{fontSize:9,color:B.gray}}>{t.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{marginTop:8}}>
             {showDemoAccess&&(
               <div style={{marginTop:8,background:"#F8F9FA",borderRadius:8,padding:"10px 12px",textAlign:"left"}}>
                 {[
@@ -2656,7 +2655,7 @@ export default function HE101App() {
                       </select>
                     </div>
                     <button onClick={()=>{
-                      setDbUsers(prev=>({...prev,[editingParticipant.id]:{...prev[editingParticipant.id],...editingParticipant}}));
+                      setUsers(prev=>({...prev,[editingParticipant.id]:{...prev[editingParticipant.id],...editingParticipant}}));
                       supabase.upsert('users',{id:editingParticipant.id,name:editingParticipant.name,email:editingParticipant.email,agency_id:editingParticipant.agency},'id').catch(()=>{});
                       showToast("Participant updated successfully!");
                       setEditingParticipant(null);
@@ -2709,7 +2708,7 @@ export default function HE101App() {
                             <div style={{fontSize:11,color:B.gray}}>Must complete all 8 modules before housing placement</div>
                           </div>
                           <div style={{background:u.requiresMoveInClearance?B.teal:"#E0E0E0",borderRadius:99,padding:"4px 14px",fontSize:12,fontWeight:700,color:u.requiresMoveInClearance?B.white:B.gray,cursor:"pointer"}}
-                            onClick={()=>setDbUsers(prev=>({...prev,[u.id]:{...prev[u.id],requiresMoveInClearance:!prev[u.id].requiresMoveInClearance}}))}>
+                            onClick={()=>setUsers(prev=>({...prev,[u.id]:{...prev[u.id],requiresMoveInClearance:!prev[u.id].requiresMoveInClearance}}))}>
                             {u.requiresMoveInClearance?"ON":"OFF"}
                           </div>
                         </div>
