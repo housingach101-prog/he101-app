@@ -1831,6 +1831,7 @@ export default function HE101App() {
   // ─── SPONSORSHIP STATE ──────────────────────────────────────────────────────
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [showDemoAccess, setShowDemoAccess] = useState(false);
+  const [showEnrollOptions, setShowEnrollOptions] = useState(false);
   const [editingParticipant, setEditingParticipant] = useState(null);
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showAgencyForm, setShowAgencyForm] = useState(false);
