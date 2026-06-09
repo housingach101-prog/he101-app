@@ -1831,7 +1831,6 @@ export default function HE101App() {
   // ─── SPONSORSHIP STATE ──────────────────────────────────────────────────────
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [showDemoAccess, setShowDemoAccess] = useState(false);
-  const [showEnrollOptions, setShowEnrollOptions] = useState(false);
   const [editingParticipant, setEditingParticipant] = useState(null);
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showAgencyForm, setShowAgencyForm] = useState(false);
@@ -2043,40 +2042,13 @@ export default function HE101App() {
             </div>
           )}
 
+
           {/* Request Demo - PRIMARY CTA */}
-          <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #F0F0F0",textAlign:"center"}}>
+          <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #F0F0F0"}}>
             <button onClick={()=>setShowDemoAccess(p=>!p)}
-              style={{background:B.orange,border:"none",borderRadius:8,fontSize:13,color:"white",cursor:"pointer",padding:"10px 24px",fontFamily:"Montserrat,sans-serif",fontWeight:800,width:"100%",letterSpacing:"0.04em"}}>
-              {showDemoAccess?"Hide Demo Access":"🔐 Request Demo Access"}
+              style={{background:B.orange,border:"none",borderRadius:8,fontSize:13,color:"white",cursor:"pointer",padding:"11px 24px",fontFamily:"Montserrat,sans-serif",fontWeight:800,width:"100%",letterSpacing:"0.04em"}}>
+              {showDemoAccess?"Hide Demo Access":"Request Demo Access"}
             </button>
-          </div>
-
-
-          {/* Enroll Now - collapsed by default */}
-          <div style={{textAlign:"center",marginTop:10}}>
-            <button onClick={()=>setShowEnrollOptions(p=>!p)}
-              style={{background:"none",border:"1px solid #E0E0E0",borderRadius:6,fontSize:11,color:B.gray,cursor:"pointer",padding:"5px 16px",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>
-              {showEnrollOptions?"▲ Hide Enrollment Options":"▼ Enroll Now"}
-            </button>
-            {showEnrollOptions&&(
-              <div style={{marginTop:10}}>
-                <div style={{fontSize:10,fontWeight:800,color:B.gray,textAlign:"center",marginBottom:8,letterSpacing:"0.08em"}}>SELECT ENROLLMENT TYPE</div>
-                <div style={{display:"flex",gap:8}}>
-                  {[
-                    {label:"Individual",price:"$75",sub:"per person",color:B.orange,action:()=>setShowIndividualForm(true)},
-                    {label:"Agency",price:"$100",sub:"per participant",color:B.teal,action:()=>setShowAgencyForm(true)},
-                    {label:"Sponsorship",price:"20",sub:"spots available",color:B.navy,action:()=>setShowSponsorForm(true)},
-                  ].map(t=>(
-                    <div key={t.label} onClick={t.action} style={{flex:1,background:B.white,border:`2px solid ${t.color}55`,borderRadius:8,padding:"10px 4px",textAlign:"center",cursor:"pointer"}}>
-                      <div style={{fontSize:10,fontWeight:800,color:t.color,marginBottom:2}}>{t.label}</div>
-                      <div style={{fontSize:17,fontWeight:900,color:t.color}}>{t.price}</div>
-                      <div style={{fontSize:9,color:B.gray}}>{t.sub}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div style={{marginTop:8}}>
             {showDemoAccess&&(
               <div style={{marginTop:8,background:"#F8F9FA",borderRadius:8,padding:"10px 12px",textAlign:"left"}}>
                 {[
@@ -2092,6 +2064,32 @@ export default function HE101App() {
                     <span style={{fontWeight:800,color:d.color}}>{d.label}:</span> {d.user} / {d.pw}
                   </button>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Enroll Now - collapsed */}
+          <div style={{textAlign:"center",marginTop:10}}>
+            <button onClick={()=>setShowEnrollOptions(p=>!p)}
+              style={{background:"none",border:"1px solid #E0E0E0",borderRadius:6,fontSize:11,color:B.gray,cursor:"pointer",padding:"5px 16px",fontFamily:"Montserrat,sans-serif",fontWeight:600}}>
+              {showEnrollOptions?"^ Hide Enrollment Options":"v Enroll Now"}
+            </button>
+            {showEnrollOptions&&(
+              <div style={{marginTop:10,textAlign:"left"}}>
+                <div style={{fontSize:10,fontWeight:800,color:B.gray,textAlign:"center",marginBottom:8,letterSpacing:"0.08em"}}>SELECT ENROLLMENT TYPE</div>
+                <div style={{display:"flex",gap:8}}>
+                  {[
+                    {label:"Individual",price:"$75",sub:"per person",color:B.orange,action:()=>setShowIndividualForm(true)},
+                    {label:"Agency",price:"$100",sub:"per participant",color:B.teal,action:()=>setShowAgencyForm(true)},
+                    {label:"Sponsorship",price:"20",sub:"spots available",color:B.navy,action:()=>setShowSponsorForm(true)},
+                  ].map(t=>(
+                    <div key={t.label} onClick={t.action} style={{flex:1,background:B.white,border:`2px solid ${t.color}55`,borderRadius:8,padding:"10px 4px",textAlign:"center",cursor:"pointer"}}>
+                      <div style={{fontSize:10,fontWeight:800,color:t.color,marginBottom:2}}>{t.label}</div>
+                      <div style={{fontSize:17,fontWeight:900,color:t.color}}>{t.price}</div>
+                      <div style={{fontSize:9,color:B.gray}}>{t.sub}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
